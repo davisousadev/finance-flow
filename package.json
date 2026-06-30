@@ -1,0 +1,19 @@
+{
+  "name": "finance-flow",
+  "version": "1.0.0",
+  "scripts": {
+    "db:migrate": "pnpm --filter @finance-flow/models db:migrate",
+    "db:generate": "pnpm --filter @finance-flow/models db:generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.9.0",
+      "onFail": "download"
+    }
+  },
+  "type": "module"
+}
