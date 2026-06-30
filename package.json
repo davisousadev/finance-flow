@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "db:migrate": "pnpm --filter @finance-flow/models db:migrate",
-    "db:generate": "pnpm --filter @finance-flow/models db:generate"
+    "db:generate": "pnpm --filter @finance-flow/models db:generate",
+    "db:push": "pnpm --filter @finance-flow/models db:push",
+    "api": "pnpm --filter @finance-flow/controllers dev"
   },
   "keywords": [],
   "author": "",
