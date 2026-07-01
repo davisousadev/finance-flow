@@ -6,6 +6,7 @@ import {
   ZodTypeProvider,
 } from "fastify-type-provider-zod";
 import {clientsRoutes} from "./routes/clients.routes";
+import {plansRoutes} from "./routes/plans.routes";
 import "dotenv/config";
 
 export const app = Fastify({
@@ -21,6 +22,7 @@ app.register(cors, {
 });
 
 app.register(clientsRoutes);
+app.register(plansRoutes);
 
 app.listen(
   {
