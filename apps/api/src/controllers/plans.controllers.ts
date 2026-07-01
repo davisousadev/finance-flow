@@ -20,6 +20,6 @@ export const plansController = {
   async getPlans(_req: FastifyRequest, res: FastifyReply) {
     const allPlans = await db.select().from(plans);
 
-    return res.status(200).send({ message: "Plans retrieved successfully", body: allPlans });
+    return res.status(200).send( allPlans );
   }
 };
