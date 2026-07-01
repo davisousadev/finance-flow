@@ -1,4 +1,4 @@
-import { CheckIcon, GroupIcon, Plus } from "lucide-react";
+import { CheckIcon, GroupIcon, Plus, PrinterCheckIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./card";
 import React from "react";
@@ -6,6 +6,7 @@ import { plansService } from "@/services/plansService";
 import { clientsService } from "@/services/clientsService";
 import type { Plan } from "@/types/plansTypes";
 import type { Client } from "@/types/clientTypes";
+import { TableClients } from "./tableClients";
 
 export function Home() {
   const [clients, setClients] = React.useState<Client[]>([]);
@@ -36,7 +37,7 @@ export function Home() {
     handleGetPlans();
   }, []);
   return (
-    <section>
+    <section className="flex flex-col gap-8">
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold text-secondary-100 ">
@@ -51,13 +52,13 @@ export function Home() {
           Add Subscription
         </Button>
       </div>
-      <div className="mt-8 grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-3 gap-6">
         <Card
           title="Total Clients"
           className="w-full"
           description="Number of active clients in October 2024"
           data={clients.length.toString()}
-          icon={<GroupIcon />}
+          icon={<GroupIcon className="font-bold text-primary-300" />}
         />
         <Card
           title="Active Plans"
@@ -73,8 +74,14 @@ export function Home() {
           data={plans
             .reduce((sum, plan) => sum + (plan?.price || 0), 0)
             .toString()}
-          icon={<CheckIcon className="font-bold text-secondary-300" />}
+          icon={<PrinterCheckIcon className="font-bold text-yellow-300" />}
         />
+      </div>
+      <div className="flex flex-col gap-4 bg-neutral-950 p-6 rounded-lg">
+        <h3 className="text-lg font-semibold text-secondary-200">
+          Client Subscriptions
+        </h3>
+        <TableClients clients={clients} />
       </div>
     </section>
   );
