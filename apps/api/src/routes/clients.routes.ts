@@ -12,4 +12,6 @@ export async function clientsRoutes(app: FastifyInstance) {
     },
     clientsController.createClient,
   );
+
+  app.get("/clients", clientsController.getClients);
 }

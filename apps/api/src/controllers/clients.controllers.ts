@@ -21,4 +21,9 @@ export const clientsController = {
 
     return reply.status(201).send({ message: "Client created successfully", body: newClient });
   },
+
+  async getClients(_request: FastifyRequest, reply: FastifyReply) {
+    const allClients = await db.select().from(clients);
+    return reply.status(200).send(allClients);
+  },
 };
