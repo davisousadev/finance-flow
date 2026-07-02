@@ -14,7 +14,7 @@ type TableClientsProps = {
 
 export function TableClients({ clients }: TableClientsProps) {
   return (
-    <Table>
+    <Table className="hover:bg-secondary-800/50 hover:cursor-pointer">
       <TableHeader>
         <TableRow className="bg-neutral-900 border-none">
           <TableHead className=" font-mono font-bold text-primary-100/70">
