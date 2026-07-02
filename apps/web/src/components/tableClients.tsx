@@ -14,7 +14,7 @@ type TableClientsProps = {
 
 export function TableClients({ clients }: TableClientsProps) {
   return (
-    <Table className="hover:bg-secondary-800/50 hover:cursor-pointer">
+    <Table className=" hover:cursor-pointer">
       <TableHeader>
         <TableRow className="bg-neutral-900 border-none">
           <TableHead className=" font-mono font-bold text-primary-100/70">
@@ -35,7 +35,7 @@ export function TableClients({ clients }: TableClientsProps) {
         {clients.map((client) => (
           <TableRow
             key={client.id}
-            className="bg-neutral-950 text-secondary-200"
+            className="bg-neutral-950 text-secondary-200 border-none hover:bg-neutral-900/70 hover:cursor-pointer"
           >
             <TableCell className="font-bold flex flex-col">
               {client.name}

@@ -7,7 +7,7 @@ import { clientsService } from "@/services/clientsService";
 import type { Plan } from "@/types/plansTypes";
 import type { Client } from "@/types/clientTypes";
 import { TableClients } from "./tableClients";
-import { ModalCreateClient } from "./modalAddClient";
+import { ModalCreateClient } from "./modalCreateClient";
 
 export function Home() {
   const [clients, setClients] = React.useState<Client[]>([]);
@@ -100,7 +100,7 @@ export function Home() {
             icon={<PrinterCheckIcon className="font-bold text-yellow-300" />}
           />
         </div>
-        <div className="flex flex-col gap-4 bg-neutral-950 p-6 rounded-lg">
+        <div className="flex flex-col gap-4 bg-neutral-950 p-6 rounded-lg max-h-125  *:overflow-y-auto scrollbar-thumb-neutral-800 scrollbar-track-neutral-950">
           <h3 className="text-lg font-semibold text-secondary-200">
             Client Subscriptions
           </h3>
@@ -112,6 +112,7 @@ export function Home() {
         closeModal={() =>
           setOpenModal((prevState) => ({ ...prevState, createClient: false }))
         }
+        setClients={setClients}
       />
     </>
   );
