@@ -8,6 +8,7 @@ import type { Plan } from "@/types/plansTypes";
 import type { Client } from "@/types/clientTypes";
 import { TableClients } from "./tableClients";
 import { ModalCreateClient } from "./modalCreateClient";
+import { ModalCreatePlan } from "./modalCreatePlan";
 
 export function Home() {
   const [clients, setClients] = React.useState<Client[]>([]);
@@ -16,6 +17,7 @@ export function Home() {
     createClient: false,
     createPlan: false,
   });
+  console.log('plans', plans)
   const monthlyPrice = plans.reduce((total, plan) => total + plan.price, 0);
 
   async function handleGetClients() {
@@ -113,6 +115,13 @@ export function Home() {
           setOpenModal((prevState) => ({ ...prevState, createClient: false }))
         }
         setClients={setClients}
+      />
+      <ModalCreatePlan
+        open={openModal.createPlan}
+        closeModal={() =>
+          setOpenModal((prevState) => ({ ...prevState, createPlan: false }))
+        }
+        setCreatedPlan={setPlans}
       />
     </>
   );

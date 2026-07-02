@@ -22,7 +22,7 @@ export function InputSearch({ label, description, placeholder, iconPosition }: I
   return (
     <Field className="max-w-sm">
       <FieldLabel htmlFor="inline-start-input">{label}</FieldLabel>
-      <InputGroup className="rounded-full border border-neutral-900 bg-neutral-900 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary"   >
+      <InputGroup className="rounded-full border border-neutral-900 bg-neutral-900 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary text-secondary-100"   >
         <InputGroupInput id="inline-start-input" placeholder={placeholder || "Search..."} />
         <InputGroupAddon align={`inline-${iconPosition || "start"}`}>
           <SearchIcon className="text-muted-foreground" />
