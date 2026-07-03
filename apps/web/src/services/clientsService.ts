@@ -1,7 +1,7 @@
 import type { Client } from "@/types/clientTypes";
 
 export const clientsService = {
-  async getClients() {
+  async getClients(): Promise<Client[]> {
     const response = await fetch("http://localhost:3000/clients");
     const data = await response.json();
 
@@ -11,7 +11,7 @@ export const clientsService = {
     return data;
   },
 
-  async createClient(client: Omit<Client, "id">) {
+  async createClient(client: Omit<Client, "id">): Promise<Client> {
     const response = await fetch("http://localhost:3000/clients", {
       method: "POST",
       headers: {

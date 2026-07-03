@@ -6,19 +6,37 @@ import { plansService } from "@/services/plansService";
 import { clientsService } from "@/services/clientsService";
 import type { Plan } from "@/types/plansTypes";
 import type { Client } from "@/types/clientTypes";
-import { TableClients } from "./tableClients";
-import { ModalCreateClient } from "./modalCreateClient";
-import { ModalCreatePlan } from "./modalCreatePlan";
+import { TableSubscriptions } from "./tableSubsciptions";
+import { ModalCreateClient } from "./modals/modalCreateClient";
+import { ModalCreatePlan } from "./modals/modalCreatePlan";
+import { ModalCreateSubscription } from "./modals/modalCreateSubscription";
+import type { SubscriptionDetails } from "@/types/subscriptions";
+import { subscriptionService } from "@/services/subscriptionsService";
 
 export function Home() {
   const [clients, setClients] = React.useState<Client[]>([]);
   const [plans, setPlans] = React.useState<Plan[]>([]);
+  const [subscriptions, setSubscriptions] = React.useState<
+    SubscriptionDetails[]
+  >([]);
   const [openModal, setOpenModal] = React.useState({
     createClient: false,
     createPlan: false,
+    createSubscription: false,
   });
-  console.log('plans', plans)
-  const monthlyPrice = plans.reduce((total, plan) => total + plan.price, 0);
+
+  const monthlyPrice = subscriptions.reduce(
+    (total, subscription) => total + subscription.planPrice,
+    0,
+  );
+  const activePlans = subscriptions.filter(
+    (subscription) => subscription.status === "active",
+  ).length;
+
+  const activeClients = subscriptions.filter(
+    (subscription) =>
+      subscription.status === "active" || subscription.status === "expired",
+  ).length;
 
   async function handleGetClients() {
     try {
@@ -29,7 +47,18 @@ export function Home() {
     }
   }
 
-  function handleOpenModal(modalName: "createClient" | "createPlan") {
+  async function handleGetSubscriptions() {
+    try {
+      const data = await subscriptionService.getSubscriptionDetails();
+      setSubscriptions(data);
+    } catch (error) {
+      console.error("Error fetching subscriptions:", error);
+    }
+  }
+
+  function handleOpenModal(
+    modalName: "createClient" | "createPlan" | "createSubscription",
+  ) {
     setOpenModal((prevState) => ({
       ...prevState,
       [modalName]: true,
@@ -48,6 +77,7 @@ export function Home() {
   React.useEffect(() => {
     handleGetClients();
     handleGetPlans();
+    handleGetSubscriptions();
   }, []);
 
   return (
@@ -81,17 +111,17 @@ export function Home() {
         </div>
         <div className="grid grid-cols-3 gap-6">
           <Card
-            title="Total Clients"
+            title="Active Clients"
             className="w-full"
             description="Number of active clients in October 2024"
-            data={clients.length.toString()}
+            data={activeClients.toString()}
             icon={<GroupIcon className="font-bold text-primary-300" />}
           />
           <Card
             title="Active Plans"
             className="w-full"
             description="Number of active plans in October 2024"
-            data={plans.length.toString()}
+            data={activePlans.toString()}
             icon={<CheckIcon className="font-bold text-secondary-300" />}
           />
           <Card
@@ -102,11 +132,20 @@ export function Home() {
             icon={<PrinterCheckIcon className="font-bold text-yellow-300" />}
           />
         </div>
-        <div className="flex flex-col gap-4 bg-neutral-950 p-6 rounded-lg max-h-125  *:overflow-y-auto scrollbar-thumb-neutral-800 scrollbar-track-neutral-950">
-          <h3 className="text-lg font-semibold text-secondary-200">
-            Client Subscriptions
-          </h3>
-          <TableClients clients={clients} />
+        <div className="flex flex-col gap-4 bg-neutral-950 p-6 rounded-lg max-h-128  *:overflow-y-auto scrollbar-thumb-neutral-800 scrollbar-track-neutral-950">
+          <div className="flex items-center justify-between p-2">
+            <h3 className="text-lg font-semibold text-secondary-200">
+              Client Subscriptions
+            </h3>
+            <Button
+              className="flex items-center gap-2 bg-primary-gradient-right p-4 rounded-xl"
+              onClick={() => handleOpenModal("createSubscription")}
+            >
+              <Plus />
+              Add Subscription
+            </Button>
+          </div>
+          <TableSubscriptions subscriptions={subscriptions} />
         </div>
       </section>
       <ModalCreateClient
@@ -122,6 +161,16 @@ export function Home() {
           setOpenModal((prevState) => ({ ...prevState, createPlan: false }))
         }
         setCreatedPlan={setPlans}
+      />
+      <ModalCreateSubscription
+        open={openModal.createSubscription}
+        closeModal={() =>
+          setOpenModal((prevState) => ({
+            ...prevState,
+            createSubscription: false,
+          }))
+        }
+        setSubscriptions={setSubscriptions}
       />
     </>
   );

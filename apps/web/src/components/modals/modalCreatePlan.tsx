@@ -1,8 +1,8 @@
 import { plansService } from "@/services/plansService";
 import { ModalContainer } from "./modalContainer";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import React from "react";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import { toast } from "sonner";
 import {
   Select,
@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../ui/select";
 import type { Plan } from "@/types/plansTypes";
 
 type ModalCreatePlanProps = {

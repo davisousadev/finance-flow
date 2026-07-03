@@ -1,7 +1,7 @@
 import React from "react";
 import { ModalContainer } from "./modalContainer";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { clientsService } from "@/services/clientsService";
 import type { Client } from "@/types/clientTypes";
 import { toast } from "sonner";

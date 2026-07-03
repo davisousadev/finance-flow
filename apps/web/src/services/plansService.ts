@@ -1,7 +1,7 @@
 import type { Plan } from "@/types/plansTypes";
 
 export const plansService = {
-    async getPlans() {
+    async getPlans(): Promise<Plan[]> {
         const response = await fetch("http://localhost:3000/plans");
         const data = await response.json();
 
@@ -11,7 +11,7 @@ export const plansService = {
         return data;
     },
 
-    async createPlan(plan: Omit<Plan, "id">) {
+    async createPlan(plan: Omit<Plan, "id">): Promise<Plan> {
         const response = await fetch("http://localhost:3000/plans", {
             method: "POST",
             headers: {
