@@ -11,20 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import type { Plan } from "@/types/plansTypes";
+import { useFinanceContext } from "@/context/financeContext";
 
-type ModalCreatePlanProps = {
-  open: boolean;
-  closeModal?: () => void;
-  setCreatedPlan?: React.Dispatch<React.SetStateAction<Plan[]>>;
-};
-
-export function ModalCreatePlan({ open, closeModal, setCreatedPlan }: ModalCreatePlanProps) {
+export function ModalCreatePlan() {
   const [name, setName] = React.useState("");
   const [price, setPrice] = React.useState("");
   const [interval, setInterval] = React.useState<"monthly" | "yearly">(
     "monthly",
   );
+
+  const { openModal, setOpenModal, setPlans, handleCloseModal } = useFinanceContext();
 
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -38,19 +34,19 @@ export function ModalCreatePlan({ open, closeModal, setCreatedPlan }: ModalCreat
         interval,
       });
       toast.success("Plan created successfully!");
-      setCreatedPlan?.((prevPlans) => [...prevPlans, newPlan]);
+      setPlans?.((prevPlans) => [...prevPlans, newPlan]);
     } catch (error) {
       console.error("Error creating plan:", error);
     } finally {
       setName("");
       setPrice("");
       setInterval("monthly");
-      closeModal?.();
+      setOpenModal((prevState) => ({ ...prevState, createPlan: false }));
     }
   }
 
   return (
-    <ModalContainer open={open}>
+    <ModalContainer open={openModal.createPlan}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
         onSubmit={handleSubmit}
@@ -105,7 +101,7 @@ export function ModalCreatePlan({ open, closeModal, setCreatedPlan }: ModalCreat
           </Select>
         </div>
         <div className="flex justify-end gap-2">
-          <Button variant={"ghost"} onClick={closeModal}>
+          <Button variant={"ghost"} onClick={() => handleCloseModal("createPlan")}>
             Cancel
           </Button>
           <Button type="submit">Create Plan</Button>

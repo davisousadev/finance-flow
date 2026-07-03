@@ -3,22 +3,14 @@ import { ModalContainer } from "./modalContainer";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { clientsService } from "@/services/clientsService";
-import type { Client } from "@/types/clientTypes";
 import { toast } from "sonner";
+import { useFinanceContext } from "@/context/financeContext";
 
-type ModalCreateClientProps = {
-  open: boolean;
-  closeModal?: () => void;
-  setClients?: React.Dispatch<React.SetStateAction<Client[]>>;
-};
-
-export function ModalCreateClient({
-  open,
-  closeModal,
-  setClients,
-}: ModalCreateClientProps) {
+export function ModalCreateClient() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
+
+  const {openModal, setOpenModal, setClients, handleCloseModal} = useFinanceContext();
 
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -34,11 +26,11 @@ export function ModalCreateClient({
     } finally {
       setName("");
       setEmail("");
-      closeModal?.();
+      setOpenModal((prevState) => ({ ...prevState, createClient: false }));
     }
   }
   return (
-    <ModalContainer open={open}>
+    <ModalContainer open={openModal.createClient}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
         onSubmit={handleSubmit}
@@ -76,7 +68,7 @@ export function ModalCreateClient({
           />
         </div>
         <footer className="flex justify-end gap-2 mt-4">
-          <Button type="button" variant="ghost" onClick={closeModal}>
+          <Button type="button" variant="ghost" onClick={() => handleCloseModal("createClient")}>
             Cancel
           </Button>
           <Button>Create Client</Button>

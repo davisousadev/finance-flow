@@ -2,28 +2,14 @@ import { CheckIcon, GroupIcon, Plus, PrinterCheckIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./card";
 import React from "react";
-import { plansService } from "@/services/plansService";
-import { clientsService } from "@/services/clientsService";
-import type { Plan } from "@/types/plansTypes";
-import type { Client } from "@/types/clientTypes";
 import { TableSubscriptions } from "./tableSubsciptions";
 import { ModalCreateClient } from "./modals/modalCreateClient";
 import { ModalCreatePlan } from "./modals/modalCreatePlan";
 import { ModalCreateSubscription } from "./modals/modalCreateSubscription";
-import type { SubscriptionDetails } from "@/types/subscriptions";
-import { subscriptionService } from "@/services/subscriptionsService";
+import { useFinanceContext } from "@/context/financeContext";
 
 export function Home() {
-  const [clients, setClients] = React.useState<Client[]>([]);
-  const [plans, setPlans] = React.useState<Plan[]>([]);
-  const [subscriptions, setSubscriptions] = React.useState<
-    SubscriptionDetails[]
-  >([]);
-  const [openModal, setOpenModal] = React.useState({
-    createClient: false,
-    createPlan: false,
-    createSubscription: false,
-  });
+ const { subscriptions, handleGetClients, handleGetPlans, handleGetSubscriptions, handleOpenModal } = useFinanceContext();
 
   const monthlyPrice = subscriptions.reduce(
     (total, subscription) => total + subscription.planPrice,
@@ -37,42 +23,6 @@ export function Home() {
     (subscription) =>
       subscription.status === "active" || subscription.status === "expired",
   ).length;
-
-  async function handleGetClients() {
-    try {
-      const data = await clientsService.getClients();
-      setClients(data);
-    } catch (error) {
-      console.error("Error fetching clients:", error);
-    }
-  }
-
-  async function handleGetSubscriptions() {
-    try {
-      const data = await subscriptionService.getSubscriptionDetails();
-      setSubscriptions(data);
-    } catch (error) {
-      console.error("Error fetching subscriptions:", error);
-    }
-  }
-
-  function handleOpenModal(
-    modalName: "createClient" | "createPlan" | "createSubscription",
-  ) {
-    setOpenModal((prevState) => ({
-      ...prevState,
-      [modalName]: true,
-    }));
-  }
-
-  async function handleGetPlans() {
-    try {
-      const data = await plansService.getPlans();
-      setPlans(data);
-    } catch (error) {
-      console.error("Error fetching plans:", error);
-    }
-  }
 
   React.useEffect(() => {
     handleGetClients();
@@ -148,30 +98,9 @@ export function Home() {
           <TableSubscriptions subscriptions={subscriptions} />
         </div>
       </section>
-      <ModalCreateClient
-        open={openModal.createClient}
-        closeModal={() =>
-          setOpenModal((prevState) => ({ ...prevState, createClient: false }))
-        }
-        setClients={setClients}
-      />
-      <ModalCreatePlan
-        open={openModal.createPlan}
-        closeModal={() =>
-          setOpenModal((prevState) => ({ ...prevState, createPlan: false }))
-        }
-        setCreatedPlan={setPlans}
-      />
-      <ModalCreateSubscription
-        open={openModal.createSubscription}
-        closeModal={() =>
-          setOpenModal((prevState) => ({
-            ...prevState,
-            createSubscription: false,
-          }))
-        }
-        setSubscriptions={setSubscriptions}
-      />
+      <ModalCreateClient/>
+      <ModalCreatePlan/>
+      <ModalCreateSubscription/>
     </>
   );
 }

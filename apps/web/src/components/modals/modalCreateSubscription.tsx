@@ -11,24 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import type { SubscriptionDetails } from "@/types/subscriptions";
+import { useFinanceContext } from "@/context/financeContext";
 
-type ModalCreateSubscriptionProps = {
-  open: boolean;
-  closeModal?: () => void;
-  setSubscriptions?: React.Dispatch<React.SetStateAction<SubscriptionDetails[]>>;
-};
-
-export function ModalCreateSubscription({
-  open,
-  closeModal,
-  setSubscriptions,
-}: ModalCreateSubscriptionProps) {
+export function ModalCreateSubscription() {
   const [clientId, setClientId] = React.useState<number | undefined>(0);
   const [planId, setPlanId] = React.useState<number | undefined>(0);
   const [status, setStatus] = React.useState<"active" | "canceled" | "expired">(
     "active",
   );
+
+  const { openModal, setOpenModal, setSubscriptions, handleCloseModal } = useFinanceContext();
 
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,12 +42,12 @@ export function ModalCreateSubscription({
       setClientId(0);
       setPlanId(0);
       setStatus("active");
-      closeModal?.();
+      setOpenModal((prevState) => ({ ...prevState, createSubscription: false }));
     }
   }
 
   return (
-    <ModalContainer open={open}>
+    <ModalContainer open={openModal.createSubscription}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
         onSubmit={handleSubmit}
@@ -111,7 +103,7 @@ export function ModalCreateSubscription({
           </Select>
         </div>
         <div className="flex justify-end gap-4">
-          <Button type="button" variant="ghost" onClick={closeModal}>
+          <Button type="button" variant="ghost" onClick={() => handleCloseModal("createSubscription")}>
             Cancel
           </Button>
           <Button type="submit">Create Subscription</Button>
