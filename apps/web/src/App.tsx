@@ -2,15 +2,20 @@ import { Toaster } from "sonner";
 import { Home } from "./components/home";
 import { Header } from "./components/layout/header";
 import { FinanceProvider } from "./context/financeContext";
+import { SidebarInset, SidebarProvider } from "./components/ui/sidebar";
+import { AppSidebar } from "./components/appSidebar";
 
 function App() {
   return (
     <FinanceProvider>
-      <Header />
-      <main className="flex min-h-screen flex-col px-24 py-12">
-        <Home />
-        <Toaster position="top-right" richColors />
-      </main>
+      <SidebarProvider className="min-h-screen">
+        <AppSidebar />
+        <SidebarInset>
+          <Header />
+          <Home />
+          <Toaster position="top-right" richColors />
+        </SidebarInset>
+      </SidebarProvider>
     </FinanceProvider>
   );
 }

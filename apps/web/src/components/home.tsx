@@ -32,7 +32,7 @@ export function Home() {
 
   return (
     <>
-      <section className="flex flex-col gap-8">
+      <section className="flex flex-col gap-8 p-12 py-12">
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold text-secondary-200 ">
