@@ -35,7 +35,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <div className="px-2 pt-2">
-          <p className="text-3xl font-semibold tracking-wide text-sidebar-primary">
+          <p className="text-3xl font-semibold tracking-wide  bg-primary-gradient-right text-transparent bg-clip-text">
             Finance Flow
           </p>
           <p className="text-xs text-secondary-200">Gestão financeira</p>
