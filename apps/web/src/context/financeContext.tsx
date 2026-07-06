@@ -15,6 +15,8 @@ type FinanceContextType = {
     createPlan: boolean;
     createSubscription: boolean;
   };
+  client: Client | null;
+  openClientModal: boolean;
   setClients: React.Dispatch<React.SetStateAction<Client[]>>;
   setPlans: React.Dispatch<React.SetStateAction<Plan[]>>;
   setSubscriptions: React.Dispatch<React.SetStateAction<SubscriptionDetails[]>>;
@@ -28,12 +30,25 @@ type FinanceContextType = {
   handleGetClients: () => Promise<void>;
   handleGetSubscriptions: () => Promise<void>;
   handleGetPlans: () => Promise<void>;
+  handleUpdateClients: (args: {
+    id: number;
+    name: string;
+    email: string;
+  }) => Promise<void>;
   handleCloseModal: (
-    modalName: "createClient" | "createPlan" | "createSubscription",
+    modalName:
+      | "createClient"
+      | "createPlan"
+      | "createSubscription"
   ) => void;
   handleOpenModal: (
-    modalName: "createClient" | "createPlan" | "createSubscription",
+    modalName:
+      | "createClient"
+      | "createPlan"
+      | "createSubscription"
   ) => void;
+  handleOpenModalClient: (client: Client) => void;
+  handleCloseModalClient: () => void;
 };
 
 const FinanceContext = React.createContext<FinanceContextType>({
@@ -45,6 +60,8 @@ const FinanceContext = React.createContext<FinanceContextType>({
     createPlan: false,
     createSubscription: false,
   },
+  client: null,
+  openClientModal: false,
   setClients: () => {},
   setPlans: () => {},
   setSubscriptions: () => {},
@@ -54,6 +71,9 @@ const FinanceContext = React.createContext<FinanceContextType>({
   handleOpenModal: () => {},
   handleCloseModal: () => {},
   handleGetPlans: async () => {},
+  handleUpdateClients: async () => {},
+  handleOpenModalClient: () => {},
+  handleCloseModalClient: () => {},
 });
 
 export function useFinanceContext() {
@@ -66,6 +86,12 @@ export function useFinanceContext() {
 
 export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const [clients, setClients] = React.useState<Client[]>([]);
+  const[client, setClient] = React.useState<Client>({
+    id: 0,
+    name: "",
+    email: "",
+  });
+  const [openClientModal, setOpenClientModal] = React.useState(false);
   const [plans, setPlans] = React.useState<Plan[]>([]);
   const [subscriptions, setSubscriptions] = React.useState<
     SubscriptionDetails[]
@@ -76,12 +102,51 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     createSubscription: false,
   });
 
+  function handleOpenModalClient(client: Client) {
+    setOpenClientModal(true);
+    setClient({
+      id: client.id,
+      name: client.name,
+      email: client.email,
+    });
+  }
+
+  function handleCloseModalClient() {
+    setOpenClientModal(false);
+    setClient({
+      id: 0,
+      name: "",
+      email: "",
+    });
+  }
+
   async function handleGetClients() {
     try {
       const data = await clientsService.getClients();
       setClients(data);
     } catch (error) {
       console.error("Error fetching clients:", error);
+    }
+  }
+
+  async function handleUpdateClients({
+    id,
+    name,
+    email,
+  }: {
+    id: number;
+    name: string;
+    email: string;
+  }) {
+    try {
+      const updatedClient = await clientsService.updateClient(id, name, email);
+      setClients((prevClients) =>
+        prevClients.map((c) => (c.id === id ? updatedClient : c)),
+      );
+    } catch (error) {
+      console.error("Error updating clients:", error);
+    }finally {
+      handleCloseModalClient();
     }
   }
 
@@ -104,7 +169,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   function handleOpenModal(
-    modalName: "createClient" | "createPlan" | "createSubscription",
+    modalName:
+      | "createClient"
+      | "createPlan"
+      | "createSubscription"
   ) {
     setOpenModal((prevState) => ({
       ...prevState,
@@ -113,7 +181,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   function handleCloseModal(
-    modalName: "createClient" | "createPlan" | "createSubscription",
+    modalName:
+      | "createClient"
+      | "createPlan"
+      | "createSubscription"
   ) {
     setOpenModal((prevState) => ({
       ...prevState,
@@ -124,10 +195,12 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   return (
     <FinanceContext.Provider
       value={{
+        openClientModal,
         subscriptions,
         clients,
         plans,
         openModal,
+        client,
         setClients,
         setPlans,
         setSubscriptions,
@@ -137,6 +210,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         handleGetPlans,
         handleOpenModal,
         handleCloseModal,
+        handleUpdateClients,
+        handleOpenModalClient,
+        handleCloseModalClient,
       }}
     >
       {children}

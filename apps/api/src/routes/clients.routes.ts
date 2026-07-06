@@ -14,4 +14,16 @@ export async function clientsRoutes(app: FastifyInstance) {
   );
 
   app.get("/clients", clientsController.getClients);
+
+  app.put(
+    "/clients/:id",
+    {
+      schema: {
+        body: clientsSchema,
+      },
+    },
+    clientsController.updateClient,
+  );
+
+  app.delete("/clients/:id", clientsController.deleteClient);
 }

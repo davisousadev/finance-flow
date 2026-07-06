@@ -1,3 +1,6 @@
+import { MoreHorizontalIcon } from "lucide-react";
+import { Button } from "../ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -23,6 +26,9 @@ export function TablePlans() {
           <TableHead className=" font-mono font-bold text-primary-100/70">
             Price
           </TableHead>
+          <TableHead className=" font-mono font-bold text-primary-100/70">
+            Actions
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -33,7 +39,25 @@ export function TablePlans() {
           >
             <TableCell className="font-bold">{plan.id}</TableCell>
             <TableCell className="font-bold">{plan.name}</TableCell>
-            <TableCell className="font-bold">${plan.price.toFixed(2)}</TableCell>
+            <TableCell className="font-bold">
+              ${plan.price.toFixed(2)}
+            </TableCell>
+            <TableCell className="font-bold">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="size-8">
+                    <MoreHorizontalIcon />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem variant="destructive">
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

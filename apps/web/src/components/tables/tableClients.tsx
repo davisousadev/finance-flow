@@ -7,9 +7,17 @@ import {
   TableRow,
 } from "../ui/table";
 import { useFinanceContext } from "@/context/financeContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { MoreHorizontalIcon } from "lucide-react";
 
 export function TableClients() {
-  const { clients } = useFinanceContext();
+  const { clients, handleOpenModalClient } = useFinanceContext();
   return (
     <Table className=" hover:cursor-pointer">
       <TableHeader>
@@ -23,6 +31,9 @@ export function TableClients() {
           <TableHead className=" font-mono font-bold text-primary-100/70">
             Email
           </TableHead>
+          <TableHead className=" font-mono font-bold text-primary-100/70">
+            Actions
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -34,6 +45,26 @@ export function TableClients() {
             <TableCell className="font-bold">{client.id}</TableCell>
             <TableCell className="font-bold">{client.name}</TableCell>
             <TableCell className="font-bold">{client.email}</TableCell>
+            <TableCell className="font-bold">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="size-8">
+                    <MoreHorizontalIcon />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    onClick={() => handleOpenModalClient(client)}
+                  >
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem variant="destructive">
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
