@@ -1,5 +1,10 @@
 import type { Plan } from "@/types/plansTypes";
 
+type PlanMutationResponse = {
+    message: string;
+    body: Plan;
+};
+
 export const plansService = {
     async getPlans(): Promise<Plan[]> {
         const response = await fetch("http://localhost:3000/plans");
@@ -24,6 +29,7 @@ export const plansService = {
             throw new Error("Failed to create plan");
         }
 
-        return await response.json();
+        const data = (await response.json()) as PlanMutationResponse;
+        return data.body;
     },
 }
