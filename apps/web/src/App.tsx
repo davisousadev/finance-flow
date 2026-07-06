@@ -1,9 +1,28 @@
 import { Toaster } from "sonner";
-import { Home } from "./components/home";
 import { Header } from "./components/layout/header";
 import { FinanceProvider } from "./context/financeContext";
 import { SidebarInset, SidebarProvider } from "./components/ui/sidebar";
 import { AppSidebar } from "./components/appSidebar";
+import { createBrowserRouter } from "react-router";
+import { RouterProvider } from "react-router/dom";
+import { Home } from "./pages/home";
+import { Clients } from "./pages/clients";
+import { Plans } from "./pages/plans";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/clients",
+    element: <Clients />,
+  },
+  {
+    path: "/plans",
+    element: <Plans />,
+  }
+]);
 
 function App() {
   return (
@@ -12,8 +31,8 @@ function App() {
         <AppSidebar />
         <SidebarInset>
           <Header />
-          <Home />
           <Toaster position="top-right" richColors />
+          <RouterProvider router={router} />
         </SidebarInset>
       </SidebarProvider>
     </FinanceProvider>

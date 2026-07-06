@@ -1,12 +1,12 @@
-import { CheckIcon, GroupIcon, Plus, PrinterCheckIcon } from "lucide-react";
-import { Button } from "./ui/button";
-import { Card } from "./card";
-import React from "react";
-import { TableSubscriptions } from "./tableSubsciptions";
-import { ModalCreateClient } from "./modals/modalCreateClient";
-import { ModalCreatePlan } from "./modals/modalCreatePlan";
-import { ModalCreateSubscription } from "./modals/modalCreateSubscription";
+import { Card } from "@/components/card";
+import { ModalCreateClient } from "@/components/modals/modalCreateClient";
+import { ModalCreatePlan } from "@/components/modals/modalCreatePlan";
+import { ModalCreateSubscription } from "@/components/modals/modalCreateSubscription";
+import { TableSubscriptions } from "@/components/tables/tableSubsciptions";
+import { Button } from "@/components/ui/button";
 import { useFinanceContext } from "@/context/financeContext";
+import { ChartCandlestick, CheckIcon, Plus, UserRoundCheck } from "lucide-react";
+import React from "react";
 
 export function Home() {
  const { subscriptions, handleGetClients, handleGetPlans, handleGetSubscriptions, handleOpenModal } = useFinanceContext();
@@ -65,7 +65,7 @@ export function Home() {
             className="w-full"
             description="Number of active clients in October 2024"
             data={activeClients.toString()}
-            icon={<GroupIcon className="font-bold text-primary-300" />}
+            icon={<UserRoundCheck className="font-bold text-primary-300" />}
           />
           <Card
             title="Active Plans"
@@ -79,7 +79,7 @@ export function Home() {
             className="w-full"
             description="Total monthly revenue from active plans"
             data={monthlyPrice.toFixed(2)}
-            icon={<PrinterCheckIcon className="font-bold text-yellow-300" />}
+            icon={<ChartCandlestick className="font-bold text-yellow-300" />}
           />
         </div>
         <div className="flex flex-col gap-4 bg-neutral-950 p-6 rounded-lg max-h-128  *:overflow-y-auto scrollbar-thumb-neutral-800 scrollbar-track-neutral-950">
@@ -95,7 +95,7 @@ export function Home() {
               Add Subscription
             </Button>
           </div>
-          <TableSubscriptions subscriptions={subscriptions} />
+          <TableSubscriptions/>
         </div>
       </section>
       <ModalCreateClient/>

@@ -111,7 +111,7 @@
     --primary-700: #842BD2;
     --primary-800: #6900B3;
     --primary-900: #490080;
-    --primary-950: oklch(24.198% 0.12846 301.059);
+    --primary-950: #2c0051;
     --primary-foreground: var(--primary-950);
 
     --secondary: #6366F1;
@@ -125,7 +125,7 @@
     --secondary-800: #2F2EBE;
     --secondary-900: #1000A9;
     --secondary-950: #07006C;
-    --secondary-foreground: oklch(0.205 0 0);
+    --secondary-foreground: var(--secondary-950);
 
     --neutral: #0F172A;
     --neutral-100: #EEF0FF;
@@ -161,9 +161,9 @@
     --sidebar: var(--neutral-950);
     --sidebar-foreground: var(--foreground);
     --sidebar-primary: var(--primary);
-    --sidebar-primary-foreground: var(--primary-foreground);
-    --sidebar-accent: var(--accent);
-    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-primary-foreground: var(--primary-950);
+    --sidebar-accent: var(--primary-100);
+    --sidebar-accent-foreground: var(--primary-950);
     --sidebar-border: var(--border);
     --sidebar-ring: var(--ring);
 }

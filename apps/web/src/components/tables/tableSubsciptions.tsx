@@ -1,4 +1,3 @@
-import { Badge } from "./ui/badge";
 import {
   Table,
   TableBody,
@@ -6,14 +5,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import type { SubscriptionDetails } from "@/types/subscriptions";
+} from "../ui/table";
+import { Badge } from "../ui/badge";
+import { useFinanceContext } from "@/context/financeContext";
 
-type TableSubscriptionsProps = {
-  subscriptions: SubscriptionDetails[];
-};
+export function TableSubscriptions() {
+  const {subscriptions} = useFinanceContext()
 
-export function TableSubscriptions({ subscriptions }: TableSubscriptionsProps) {
   function getBadgeVariant(status: string) {
     switch (status) {
       case "active":
@@ -53,11 +51,13 @@ export function TableSubscriptions({ subscriptions }: TableSubscriptionsProps) {
             key={subscription.id}
             className="bg-neutral-950 text-secondary-200 border-none hover:bg-neutral-900/70 hover:cursor-pointer"
           >
-            <TableCell className="font-bold flex flex-col">
-              {subscription.clientName}
-              <span className="text-xs text-muted-foreground font-mono font-semibold">
-                {subscription.clientEmail}
-              </span>
+            <TableCell className="font-bold">
+              <div className="flex flex-col">
+                <span>{subscription.clientName}</span>
+                <span className="text-xs text-muted-foreground font-mono font-semibold">
+                  {subscription.clientEmail}
+                </span>
+              </div>
             </TableCell>
             <TableCell>
               <Badge variant={getBadgeVariant(subscription.status)}>

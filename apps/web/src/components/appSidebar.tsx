@@ -1,4 +1,4 @@
-import { Home } from "lucide-react";
+import { Home, Orbit, Users } from "lucide-react";
 
 import {
   Sidebar,
@@ -12,7 +12,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-// Menu items.
 const items = [
   {
     title: "Home",
@@ -22,13 +21,13 @@ const items = [
   {
     title: "Clients",
     url: "/clients",
-    icon: Home,
+    icon: Users,
   },
   {
     title: "Plans",
     url: "/plans",
-    icon: Home,
-  }
+    icon: Orbit,
+  },
 ];
 
 export function AppSidebar() {
@@ -39,9 +38,7 @@ export function AppSidebar() {
           <p className="text-3xl font-semibold tracking-wide text-sidebar-primary">
             Finance Flow
           </p>
-          <p className="text-xs text-secondary-200">
-            Gestão financeira
-          </p>
+          <p className="text-xs text-secondary-200">Gestão financeira</p>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -53,10 +50,13 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={item.url === "/"}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={window.location.pathname === item.url}
+                  >
                     <a href={item.url}>
                       <item.icon />
-                      <span className="text-primary-200">{item.title}</span>
+                      {item.title}
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
