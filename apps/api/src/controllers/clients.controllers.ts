@@ -62,6 +62,6 @@ export const clientsController = {
       return reply.status(404).send({ message: "Client not found", payload: null });
     }
 
-    return reply.status(200).send({ message: "Client deleted successfully", payload: { id } });
+    return reply.status(200).send({ message: "Client deleted successfully", payload: deletedClients[0] });
   },
 };

@@ -17,4 +17,19 @@ export async function plansRoutes(app: FastifyInstance) {
         "/plans",
         plansController.getPlans,
     );
+
+    app.put(
+        "/plans/:id",
+        {
+            schema: {
+                body: plansSchema,
+            },
+        },
+        plansController.updatePlan,
+    );
+
+    app.delete(
+        "/plans/:id",
+        plansController.deletePlan,
+    );
 }
