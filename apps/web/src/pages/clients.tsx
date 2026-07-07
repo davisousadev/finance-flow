@@ -1,3 +1,4 @@
+import { ModalDeleteClient } from "@/components/modals/modalDeleteClient";
 import { ModalEditClient } from "@/components/modals/modalEditClient";
 import { TableClients } from "@/components/tables/tableClients";
 import { useFinanceContext } from "@/context/financeContext";
@@ -18,6 +19,7 @@ export function Clients() {
         </div>
       </section>
       <ModalEditClient />
+      <ModalDeleteClient />
     </>
   );
 }

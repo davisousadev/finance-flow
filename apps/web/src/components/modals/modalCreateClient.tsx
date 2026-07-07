@@ -3,12 +3,14 @@ import { ModalContainer } from "./modalContainer";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useFinanceContext } from "@/context/financeContext";
+import { LoaderIcon } from "lucide-react";
+import { Separator } from "../ui/separator";
 
 export function ModalCreateClient() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
 
-  const { openModal, handleCreateClient, handleCloseModal } =
+  const { openModal, handleCreateClient, handleCloseModal, loading } =
     useFinanceContext();
 
   return (
@@ -51,7 +53,8 @@ export function ModalCreateClient() {
             required
           />
         </div>
-        <footer className="flex justify-end gap-2 mt-4">
+        <Separator className="my-4" />
+        <footer className="flex justify-end gap-2">
           <Button
             type="button"
             variant="ghost"
@@ -59,7 +62,9 @@ export function ModalCreateClient() {
           >
             Cancel
           </Button>
-          <Button>Create Client</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? <LoaderIcon className="animate-spin" /> : "Create Client"}
+          </Button>
         </footer>
       </form>
     </ModalContainer>

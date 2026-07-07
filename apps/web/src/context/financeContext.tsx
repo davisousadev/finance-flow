@@ -18,6 +18,7 @@ type FinanceContextType = {
   };
   client: Client | null;
   openClientModal: boolean;
+  deleteClientModal: boolean;
   loading: boolean;
   setClients: React.Dispatch<React.SetStateAction<Client[]>>;
   setPlans: React.Dispatch<React.SetStateAction<Plan[]>>;
@@ -32,11 +33,14 @@ type FinanceContextType = {
   handleGetClients: () => Promise<void>;
   handleGetSubscriptions: () => Promise<void>;
   handleGetPlans: () => Promise<void>;
-  handleUpdateClients: (e: React.SubmitEvent<HTMLFormElement>, args: {
-    id: number;
-    name: string;
-    email: string;
-  }) => Promise<void>;
+  handleUpdateClients: (
+    e: React.SubmitEvent<HTMLFormElement>,
+    args: {
+      id: number;
+      name: string;
+      email: string;
+    },
+  ) => Promise<void>;
   handleCloseModal: (
     modalName: "createClient" | "createPlan" | "createSubscription",
   ) => void;
@@ -62,6 +66,9 @@ type FinanceContextType = {
     planId: number,
     status: "active" | "canceled" | "expired",
   ) => Promise<void>;
+  handleCloseDeleteClientModal: () => void;
+  handleOpenDeleteClientModal: (client: Client) => void;
+  handleDeleteClient: (clientId: number) => Promise<void>;
 };
 
 const FinanceContext = React.createContext<FinanceContextType>({
@@ -74,6 +81,7 @@ const FinanceContext = React.createContext<FinanceContextType>({
     createSubscription: false,
   },
   client: null,
+  deleteClientModal: false,
   openClientModal: false,
   loading: false,
   setClients: () => {},
@@ -91,6 +99,9 @@ const FinanceContext = React.createContext<FinanceContextType>({
   handleCreateClient: async () => {},
   handleCreatePlan: async () => {},
   handleCreateSubscription: async () => {},
+  handleCloseDeleteClientModal: () => {},
+  handleOpenDeleteClientModal: () => {},
+  handleDeleteClient: async () => {},
 });
 
 export function useFinanceContext() {
@@ -109,6 +120,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     email: "",
   });
   const [openClientModal, setOpenClientModal] = React.useState(false);
+  const [deleteClientModal, setDeleteClientModal] = React.useState(false);
   const [plans, setPlans] = React.useState<Plan[]>([]);
   const [subscriptions, setSubscriptions] = React.useState<
     SubscriptionDetails[]
@@ -122,11 +134,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
   function handleOpenModalClient(client: Client) {
     setOpenClientModal(true);
-    setClient({
-      id: client.id,
-      name: client.name,
-      email: client.email,
-    });
+    setClient(client);
   }
 
   function handleCloseModalClient() {
@@ -136,6 +144,36 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       name: "",
       email: "",
     });
+  }
+
+  function handleCloseDeleteClientModal() {
+    setDeleteClientModal(false);
+    setClient({
+      id: 0,
+      name: "",
+      email: "",
+    });
+  }
+
+  function handleOpenDeleteClientModal(client: Client) {
+    setDeleteClientModal(true);
+    setClient(client);
+  }
+
+  async function handleDeleteClient(clientId: number) {
+    setLoading(true);
+    try {
+      await clientsService.deleteClient(clientId);
+      setClients((prevClients) => prevClients.filter((c) => c.id !== clientId));
+      toast.success("Client deleted successfully!", {
+        description: "The client has been deleted.",
+      });
+    } catch (error) {
+      console.error("Error deleting client:", error);
+    } finally {
+      setLoading(false);
+      handleCloseDeleteClientModal();
+    }
   }
 
   async function handleGetClients() {
@@ -150,15 +188,18 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function handleUpdateClients(e: React.SubmitEvent<HTMLFormElement>, {
-    id,
-    name,
-    email,
-  }: {
-    id: number;
-    name: string;
-    email: string;
-  }) {
+  async function handleUpdateClients(
+    e: React.SubmitEvent<HTMLFormElement>,
+    {
+      id,
+      name,
+      email,
+    }: {
+      id: number;
+      name: string;
+      email: string;
+    },
+  ) {
     e.preventDefault();
     setLoading(true);
     try {
@@ -310,6 +351,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         openModal,
         client,
         loading,
+        deleteClientModal,
         setClients,
         setPlans,
         setSubscriptions,
@@ -325,6 +367,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         handleCreateClient,
         handleCreatePlan,
         handleCreateSubscription,
+        handleCloseDeleteClientModal,
+        handleOpenDeleteClientModal,
+        handleDeleteClient,
       }}
     >
       {children}

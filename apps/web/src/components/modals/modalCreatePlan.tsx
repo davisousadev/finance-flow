@@ -11,6 +11,7 @@ import {
 } from "../ui/select";
 import { useFinanceContext } from "@/context/financeContext";
 import { LoaderIcon } from "lucide-react";
+import { Separator } from "../ui/separator";
 
 export function ModalCreatePlan() {
   const [name, setName] = React.useState("");
@@ -78,6 +79,7 @@ export function ModalCreatePlan() {
             </SelectContent>
           </Select>
         </div>
+        <Separator className="my-4" />
         <div className="flex justify-end gap-2">
           <Button
             variant={"ghost"}

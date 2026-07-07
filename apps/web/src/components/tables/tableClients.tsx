@@ -18,7 +18,7 @@ import { MoreHorizontalIcon } from "lucide-react";
 import { Loading } from "../loading";
 
 export function TableClients() {
-  const { clients, handleOpenModalClient, loading } = useFinanceContext();
+  const { clients, handleOpenModalClient, loading, handleOpenDeleteClientModal } = useFinanceContext();
 
   if (loading)  return <Loading />;
 
@@ -65,7 +65,7 @@ export function TableClients() {
                   >
                     Edit
                   </DropdownMenuItem>
-                  <DropdownMenuItem variant="destructive">
+                  <DropdownMenuItem variant="destructive" onClick={() => handleOpenDeleteClientModal(client)}>
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>

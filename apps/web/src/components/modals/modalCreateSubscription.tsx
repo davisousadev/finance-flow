@@ -11,6 +11,7 @@ import {
 } from "../ui/select";
 import { useFinanceContext } from "@/context/financeContext";
 import { LoaderIcon } from "lucide-react";
+import { Separator } from "../ui/separator";
 
 export function ModalCreateSubscription() {
   const [clientId, setClientId] = React.useState<number>(0);
@@ -80,6 +81,7 @@ export function ModalCreateSubscription() {
             </SelectContent>
           </Select>
         </div>
+        <Separator className="my-4" />
         <div className="flex justify-end gap-4">
           <Button
             type="button"

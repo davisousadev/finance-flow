@@ -48,4 +48,17 @@ export const clientsService = {
 
     return data.payload;
   },
+
+  async deleteClient(id: number): Promise<{ id: number }> {
+    const response = await fetch(`${URL}/clients/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete client");
+    }
+
+    const data = (await response.json()) as ApiResponse<{ id: number }>;
+    return data.payload;
+  },
 };
