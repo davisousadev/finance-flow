@@ -64,21 +64,21 @@ export function Home() {
             title="Active Clients"
             className="w-full"
             description="Number of active clients in October 2024"
-            data={activeClients.toString()}
+            data={activeClients.toString() || "0"}
             icon={<UserRoundCheck className="font-bold text-primary-300" />}
           />
           <Card
             title="Active Plans"
             className="w-full"
             description="Number of active plans in October 2024"
-            data={activePlans.toString()}
+            data={activePlans.toString() || "0"}
             icon={<CheckIcon className="font-bold text-secondary-300" />}
           />
           <Card
             title="Monthly Price"
             className="w-full"
             description="Total monthly revenue from active plans"
-            data={monthlyPrice.toFixed(2)}
+            data={monthlyPrice.toFixed(2) || "0.00"}
             icon={<ChartCandlestick className="font-bold text-yellow-300" />}
           />
         </div>

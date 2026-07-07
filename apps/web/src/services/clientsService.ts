@@ -1,23 +1,21 @@
+import { URL, type ApiResponse } from "@/api/api";
 import type { Client } from "@/types/clientTypes";
-
-type ClientMutationResponse = {
-  message: string;
-  body: Client;
-};
 
 export const clientsService = {
   async getClients(): Promise<Client[]> {
-    const response = await fetch("http://localhost:3000/clients");
-    const data = await response.json();
-
+    const response = await fetch(`${URL}/clients`);
     if (!response.ok) {
+      console.error("Failed to fetch clients");
       return [];
     }
-    return data;
+
+    const data = (await response.json()) as ApiResponse<Client[]>;
+
+    return data.payload;
   },
 
   async createClient(client: Omit<Client, "id">): Promise<Client> {
-    const response = await fetch("http://localhost:3000/clients", {
+    const response = await fetch(`${URL}/clients`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,12 +27,12 @@ export const clientsService = {
       throw new Error("Failed to create client");
     }
 
-    const data = (await response.json()) as ClientMutationResponse;
-    return data.body;
+    const data = (await response.json()) as ApiResponse<Client>;
+    return data.payload;
   },
 
   async updateClient(id: number, name: string, email: string): Promise<Client> {
-    const response = await fetch(`http://localhost:3000/clients/${id}`, {
+    const response = await fetch(`${URL}/clients/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +44,8 @@ export const clientsService = {
       throw new Error("Failed to update client");
     }
 
-    const data = (await response.json()) as ClientMutationResponse;
-    return data.body;
+    const data = (await response.json()) as ApiResponse<Client>;
+
+    return data.payload;
   },
 };

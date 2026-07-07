@@ -20,7 +20,8 @@ export function ModalCreateSubscription() {
     "active",
   );
 
-  const { openModal, setOpenModal, setSubscriptions, handleCloseModal } = useFinanceContext();
+  const { openModal, setOpenModal, setSubscriptions, handleCloseModal } =
+    useFinanceContext();
 
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -34,7 +35,8 @@ export function ModalCreateSubscription() {
         status,
       });
       toast.success("Subscription created successfully!");
-      const updatedSubscriptions = await subscriptionService.getSubscriptionDetails();
+      const updatedSubscriptions =
+        await subscriptionService.getSubscriptionDetails();
       setSubscriptions?.(updatedSubscriptions);
     } catch (error) {
       console.error("Error creating subscription:", error);
@@ -42,7 +44,10 @@ export function ModalCreateSubscription() {
       setClientId(0);
       setPlanId(0);
       setStatus("active");
-      setOpenModal((prevState) => ({ ...prevState, createSubscription: false }));
+      setOpenModal((prevState) => ({
+        ...prevState,
+        createSubscription: false,
+      }));
     }
   }
 
@@ -103,7 +108,11 @@ export function ModalCreateSubscription() {
           </Select>
         </div>
         <div className="flex justify-end gap-4">
-          <Button type="button" variant="ghost" onClick={() => handleCloseModal("createSubscription")}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => handleCloseModal("createSubscription")}
+          >
             Cancel
           </Button>
           <Button type="submit">Create Subscription</Button>

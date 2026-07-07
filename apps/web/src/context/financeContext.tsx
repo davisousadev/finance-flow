@@ -5,6 +5,7 @@ import type { Client } from "@/types/clientTypes";
 import type { Plan } from "@/types/plansTypes";
 import type { SubscriptionDetails } from "@/types/subscriptions";
 import React from "react";
+import { toast } from "sonner";
 
 type FinanceContextType = {
   subscriptions: SubscriptionDetails[];
@@ -147,6 +148,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       console.error("Error updating clients:", error);
     }finally {
       handleCloseModalClient();
+      toast.success("Client updated successfully!", {
+        description: "The client information has been updated.",
+      });
     }
   }
 

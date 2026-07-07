@@ -19,12 +19,12 @@ export const clientsController = {
       return reply.status(409).send({ message: "Client with this email already exists" });
     }
 
-    return reply.status(201).send({ message: "Client created successfully", body: newClient });
+    return reply.status(201).send({ message: "Client created successfully", payload: newClient });
   },
 
   async getClients(_request: FastifyRequest, reply: FastifyReply) {
     const allClients = await db.select().from(clients);
-    return reply.status(200).send(allClients);
+    return reply.status(200).send({ data: allClients });
   },
 
   async updateClient(
@@ -44,7 +44,7 @@ export const clientsController = {
       return reply.status(404).send({ message: "Client not found" });
     }
 
-    return reply.status(200).send({ message: "Client updated successfully", body: updatedClient });
+    return reply.status(200).send({ message: "Client updated successfully", payload: updatedClient });
   },
 
   async deleteClient(
@@ -62,6 +62,6 @@ export const clientsController = {
       return reply.status(404).send({ message: "Client not found" });
     }
 
-    return reply.status(200).send({ message: "Client deleted successfully" });
+    return reply.status(200).send({ message: "Client deleted successfully", payload: { id } });
   },
 };

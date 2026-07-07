@@ -18,14 +18,14 @@ export const subscriptionsController = {
       .status(201)
       .send({
         message: "Subscription created successfully",
-        body: newSubscription,
+        payload: newSubscription,
       });
   },
 
   async getSubscriptions(_req: FastifyRequest, res: FastifyReply) {
     const allSubscriptions = await db.select().from(subscriptions);
 
-    return res.status(200).send(allSubscriptions);
+    return res.status(200).send({ payload: allSubscriptions });
   },
 
   async getSubscriptionDetails(_req: FastifyRequest, res: FastifyReply) {
@@ -45,6 +45,6 @@ export const subscriptionsController = {
       .innerJoin(clients, eq(subscriptions.clientId, clients.id))
       .innerJoin(plans, eq(subscriptions.planId, plans.id));
 
-    return res.status(200).send(subscriptionDetails);
+    return res.status(200).send({ payload: subscriptionDetails });
   },
 };

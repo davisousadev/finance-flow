@@ -6,7 +6,9 @@
     "db:generate": "pnpm --filter @finance-flow/models db:generate",
     "db:push": "pnpm --filter @finance-flow/models db:push",
     "api": "pnpm --filter @finance-flow/controllers dev",
-    "web": "pnpm --filter @finance-flow/views dev"
+    "web": "pnpm --filter @finance-flow/views dev",
+    "db": "pnpm --filter @finance-flow/models start",
+    "db:down": "pnpm --filter @finance-flow/models down"
   },
   "keywords": [],
   "author": "",

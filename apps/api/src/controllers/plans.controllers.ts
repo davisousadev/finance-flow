@@ -14,12 +14,12 @@ export const plansController = {
       .values({ name, price, interval })
       .returning();
 
-    return res.status(201).send({ message: "Plan created successfully", body: newPlan });
+    return res.status(201).send({ message: "Plan created successfully", payload: newPlan });
   },
 
   async getPlans(_req: FastifyRequest, res: FastifyReply) {
     const allPlans = await db.select().from(plans);
 
-    return res.status(200).send( allPlans );
+    return res.status(200).send({ payload: allPlans });
   }
 };

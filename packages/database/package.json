@@ -14,7 +14,9 @@
   "scripts": {
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "start": "docker compose -f docker-compose.yaml up -d",
+    "down": "docker compose -f docker-compose.yaml down"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
