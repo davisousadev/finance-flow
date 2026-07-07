@@ -18,7 +18,8 @@ import { useFinanceContext } from "@/context/financeContext";
 import { Loading } from "../loading";
 
 export function TablePlans() {
-  const { plans, loading } = useFinanceContext();
+  const { plans, loading, handleOpenEditPlanModal, handleOpenDeletePlanModal } =
+    useFinanceContext();
 
   if (loading) return <Loading />;
 
@@ -62,8 +63,15 @@ export function TablePlans() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem variant="destructive">
+                  <DropdownMenuItem
+                    onClick={() => handleOpenEditPlanModal(plan)}
+                  >
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => handleOpenDeletePlanModal(plan)}
+                  >
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>

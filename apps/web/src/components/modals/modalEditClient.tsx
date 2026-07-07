@@ -7,8 +7,8 @@ import React from "react";
 
 export function ModalEditClient() {
   const {
-    handleCloseModalClient,
-    openClientModal,
+    handleCloseEditClientModal,
+    editClientModal,
     handleUpdateClients,
     client,
   } = useFinanceContext();
@@ -22,7 +22,7 @@ export function ModalEditClient() {
   }, [client]);
 
   return (
-    <ModalContainer open={openClientModal}>
+    <ModalContainer open={editClientModal}>
       <form
         onSubmit={(e) => {
           handleUpdateClients(e, { id: client?.id || 0, name, email });
@@ -57,7 +57,7 @@ export function ModalEditClient() {
           <Button
             type="button"
             variant="ghost"
-            onClick={handleCloseModalClient}
+            onClick={handleCloseEditClientModal}
           >
             Cancel
           </Button>

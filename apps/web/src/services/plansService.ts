@@ -29,4 +29,34 @@ export const plansService = {
     const data = (await response.json()) as ApiResponse<Plan>;
     return data.payload;
   },
+
+  async updatePlan(plan: Plan): Promise<Plan> {
+    const response = await fetch(`${URL}/plans/${plan.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: plan.name, price: plan.price, interval: plan.interval }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update plan");
+    }
+
+    const data = (await response.json()) as ApiResponse<Plan>;
+    return data.payload;
+  },
+
+  async deletePlan(id: number): Promise<{ id: number }> {
+    const response = await fetch(`${URL}/plans/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete plan");
+    }
+
+    const data = (await response.json()) as ApiResponse<{ id: number }>;
+    return data.payload;
+  },
 };

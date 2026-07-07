@@ -31,13 +31,13 @@ export const clientsService = {
     return data.payload;
   },
 
-  async updateClient(id: number, name: string, email: string): Promise<Client> {
-    const response = await fetch(`${URL}/clients/${id}`, {
+  async updateClient(client: Client): Promise<Client> {
+    const response = await fetch(`${URL}/clients/${client.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, email }),
+      body: JSON.stringify({ name: client.name, email: client.email }),
     });
 
     if (!response.ok) {
