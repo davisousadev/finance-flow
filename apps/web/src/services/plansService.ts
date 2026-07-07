@@ -1,4 +1,4 @@
-import type { ApiResponse } from "@/api/api";
+import { URL, type ApiResponse } from "@/api/api";
 import type { Plan } from "@/types/plansTypes";
 
 export const plansService = {

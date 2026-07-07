@@ -15,9 +15,15 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { MoreHorizontalIcon } from "lucide-react";
+import { Loading } from "../loading";
 
 export function TableClients() {
-  const { clients, handleOpenModalClient } = useFinanceContext();
+  const { clients, handleOpenModalClient, loading } = useFinanceContext();
+
+  if (loading)  return <Loading />;
+
+  if (!clients || clients.length === 0) return <div>No clients available</div>;
+
   return (
     <Table className=" hover:cursor-pointer">
       <TableHeader>

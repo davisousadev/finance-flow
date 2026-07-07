@@ -1,9 +1,7 @@
 import React from "react";
-import { toast } from "sonner";
 import { ModalContainer } from "./modalContainer";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { subscriptionService } from "@/services/subscriptionsService";
 import {
   Select,
   SelectContent,
@@ -12,50 +10,25 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useFinanceContext } from "@/context/financeContext";
+import { LoaderIcon } from "lucide-react";
 
 export function ModalCreateSubscription() {
-  const [clientId, setClientId] = React.useState<number | undefined>(0);
-  const [planId, setPlanId] = React.useState<number | undefined>(0);
+  const [clientId, setClientId] = React.useState<number>(0);
+  const [planId, setPlanId] = React.useState<number>(0);
   const [status, setStatus] = React.useState<"active" | "canceled" | "expired">(
     "active",
   );
 
-  const { openModal, setOpenModal, setSubscriptions, handleCloseModal } =
+  const { openModal, handleCreateSubscription, handleCloseModal, loading } =
     useFinanceContext();
-
-  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-    try {
-      if (!clientId || !planId) {
-        throw new Error("Client and plan are required");
-      }
-      await subscriptionService.createSubscription({
-        clientId,
-        planId,
-        status,
-      });
-      toast.success("Subscription created successfully!");
-      const updatedSubscriptions =
-        await subscriptionService.getSubscriptionDetails();
-      setSubscriptions?.(updatedSubscriptions);
-    } catch (error) {
-      console.error("Error creating subscription:", error);
-    } finally {
-      setClientId(0);
-      setPlanId(0);
-      setStatus("active");
-      setOpenModal((prevState) => ({
-        ...prevState,
-        createSubscription: false,
-      }));
-    }
-  }
 
   return (
     <ModalContainer open={openModal.createSubscription}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
-        onSubmit={handleSubmit}
+        onSubmit={(e) => {
+          handleCreateSubscription(e, clientId, planId, status);
+        }}
       >
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-semibold text-secondary-200">
@@ -115,7 +88,9 @@ export function ModalCreateSubscription() {
           >
             Cancel
           </Button>
-          <Button type="submit">Create Subscription</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? <LoaderIcon className="animate-spin" /> : "Create Subscription"}
+          </Button>
         </div>
       </form>
     </ModalContainer>

@@ -1,9 +1,7 @@
-import { plansService } from "@/services/plansService";
 import { ModalContainer } from "./modalContainer";
 import { Button } from "../ui/button";
 import React from "react";
 import { Input } from "../ui/input";
-import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -12,6 +10,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useFinanceContext } from "@/context/financeContext";
+import { LoaderIcon } from "lucide-react";
 
 export function ModalCreatePlan() {
   const [name, setName] = React.useState("");
@@ -20,36 +19,15 @@ export function ModalCreatePlan() {
     "monthly",
   );
 
-  const { openModal, setOpenModal, setPlans, handleCloseModal } = useFinanceContext();
-
-  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-    try {
-      if (!name || !price) {
-        throw new Error("Name and price are required");
-      }
-      const newPlan = await plansService.createPlan({
-        name,
-        price: parseFloat(price),
-        interval,
-      });
-      toast.success("Plan created successfully!");
-      setPlans?.((prevPlans) => [...prevPlans, newPlan]);
-    } catch (error) {
-      console.error("Error creating plan:", error);
-    } finally {
-      setName("");
-      setPrice("");
-      setInterval("monthly");
-      setOpenModal((prevState) => ({ ...prevState, createPlan: false }));
-    }
-  }
+  const { openModal, handleCreatePlan, handleCloseModal, loading } = useFinanceContext();
 
   return (
     <ModalContainer open={openModal.createPlan}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
-        onSubmit={handleSubmit}
+        onSubmit={(e) => {
+          handleCreatePlan(e, name, price, interval);
+        }}
       >
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-semibold text-secondary-200">
@@ -101,10 +79,15 @@ export function ModalCreatePlan() {
           </Select>
         </div>
         <div className="flex justify-end gap-2">
-          <Button variant={"ghost"} onClick={() => handleCloseModal("createPlan")}>
+          <Button
+            variant={"ghost"}
+            onClick={() => handleCloseModal("createPlan")}
+          >
             Cancel
           </Button>
-          <Button type="submit">Create Plan</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? <LoaderIcon className="animate-spin" /> : "Create Plan"}
+          </Button>
         </div>
       </form>
     </ModalContainer>

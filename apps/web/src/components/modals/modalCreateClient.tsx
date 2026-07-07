@@ -2,38 +2,22 @@ import React from "react";
 import { ModalContainer } from "./modalContainer";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { clientsService } from "@/services/clientsService";
-import { toast } from "sonner";
 import { useFinanceContext } from "@/context/financeContext";
 
 export function ModalCreateClient() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
 
-  const {openModal, setOpenModal, setClients, handleCloseModal} = useFinanceContext();
+  const { openModal, handleCreateClient, handleCloseModal } =
+    useFinanceContext();
 
-  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-    try {
-      if (!name || !email) {
-        throw new Error("Name and email are required");
-      }
-      const createdClient = await clientsService.createClient({ name, email });
-      setClients?.((prevClients) => [...prevClients, createdClient]);
-      toast.success("Client created successfully!");
-    } catch (error) {
-      console.error("Error creating client:", error);
-    } finally {
-      setName("");
-      setEmail("");
-      setOpenModal((prevState) => ({ ...prevState, createClient: false }));
-    }
-  }
   return (
     <ModalContainer open={openModal.createClient}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
-        onSubmit={handleSubmit}
+        onSubmit={(e) => {
+          handleCreateClient(e, name, email);
+        }}
       >
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-semibold text-secondary-200">
@@ -68,7 +52,11 @@ export function ModalCreateClient() {
           />
         </div>
         <footer className="flex justify-end gap-2 mt-4">
-          <Button type="button" variant="ghost" onClick={() => handleCloseModal("createClient")}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => handleCloseModal("createClient")}
+          >
             Cancel
           </Button>
           <Button>Create Client</Button>

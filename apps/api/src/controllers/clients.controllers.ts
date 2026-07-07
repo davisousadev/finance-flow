@@ -24,7 +24,7 @@ export const clientsController = {
 
   async getClients(_request: FastifyRequest, reply: FastifyReply) {
     const allClients = await db.select().from(clients);
-    return reply.status(200).send({ data: allClients });
+    return reply.status(200).send({ payload: allClients });
   },
 
   async updateClient(

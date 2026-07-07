@@ -23,11 +23,11 @@ export const subscriptionService = {
 
   async getSubscriptionDetails(): Promise<SubscriptionDetails[]> {
     const response = await fetch(`${URL}/subscriptions/details`);
-    const data = (await response.json()) as ApiResponse<SubscriptionDetails[]>;
-
     if (!response.ok) {
       return [];
     }
+    const data = (await response.json()) as ApiResponse<SubscriptionDetails[]>;
+
     return data.payload;
   },
 };

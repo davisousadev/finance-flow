@@ -1,6 +1,11 @@
 import { MoreHorizontalIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -10,9 +15,15 @@ import {
   TableRow,
 } from "../ui/table";
 import { useFinanceContext } from "@/context/financeContext";
+import { Loading } from "../loading";
 
 export function TablePlans() {
-  const { plans } = useFinanceContext();
+  const { plans, loading } = useFinanceContext();
+
+  if (loading) return <Loading />;
+
+  if (!plans || plans.length === 0) return <div>No plans available</div>;
+
   return (
     <Table className=" hover:cursor-pointer">
       <TableHeader>
