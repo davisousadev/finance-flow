@@ -16,7 +16,7 @@ export const clientsController = {
       .returning();
 
     if (!newClient) {
-      return reply.status(409).send({ message: "Client with this email already exists" });
+      return reply.status(409).send({ message: "Client with this email already exists", payload: null });
     }
 
     return reply.status(201).send({ message: "Client created successfully", payload: newClient });
@@ -41,7 +41,7 @@ export const clientsController = {
       .returning();
 
     if (!updatedClient) {
-      return reply.status(404).send({ message: "Client not found" });
+      return reply.status(404).send({ message: "Client not found", payload: null });
     }
 
     return reply.status(200).send({ message: "Client updated successfully", payload: updatedClient });
@@ -59,7 +59,7 @@ export const clientsController = {
       .returning({ id: clients.id });
 
     if (deletedClients.length === 0) {
-      return reply.status(404).send({ message: "Client not found" });
+      return reply.status(404).send({ message: "Client not found", payload: null });
     }
 
     return reply.status(200).send({ message: "Client deleted successfully", payload: { id } });

@@ -25,8 +25,7 @@ export function ModalEditClient() {
     <ModalContainer open={openClientModal}>
       <form
         onSubmit={(e) => {
-          e.preventDefault();
-          handleUpdateClients({ id: client?.id || 0, name, email });
+          handleUpdateClients(e, { id: client?.id || 0, name, email });
         }}
       >
         <h3 className="text-lg font-semibold">Edit Client</h3>

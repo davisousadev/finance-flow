@@ -32,7 +32,7 @@ type FinanceContextType = {
   handleGetClients: () => Promise<void>;
   handleGetSubscriptions: () => Promise<void>;
   handleGetPlans: () => Promise<void>;
-  handleUpdateClients: (args: {
+  handleUpdateClients: (e: React.SubmitEvent<HTMLFormElement>, args: {
     id: number;
     name: string;
     email: string;
@@ -150,7 +150,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function handleUpdateClients({
+  async function handleUpdateClients(e: React.SubmitEvent<HTMLFormElement>, {
     id,
     name,
     email,
@@ -159,6 +159,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     name: string;
     email: string;
   }) {
+    e.preventDefault();
     setLoading(true);
     try {
       const updatedClient = await clientsService.updateClient(id, name, email);
