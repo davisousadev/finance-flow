@@ -2,7 +2,7 @@ import { Toaster } from "sonner";
 import { Header } from "./components/layout/header";
 import { FinanceProvider } from "./context/financeContext";
 import { SidebarInset, SidebarProvider } from "./components/ui/sidebar";
-import { AppSidebar } from "./components/appSidebar";
+import { AppSidebar } from "./components/layout/appSidebar";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { Home } from "./pages/home";
