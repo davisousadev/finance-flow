@@ -13,6 +13,14 @@ export function ModalCreateClient() {
   const { openModal, handleCreateClient, handleCloseModal, loading } =
     useFinanceContext();
 
+  React.useEffect(() => {
+    if (openModal.createClient) {
+      setName("");
+      setEmail("");
+    }
+  }, [openModal.createClient])
+
+
   return (
     <ModalContainer open={openModal.createClient}>
       <form

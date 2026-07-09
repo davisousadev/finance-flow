@@ -22,6 +22,14 @@ export function ModalCreatePlan() {
 
   const { openModal, handleCreatePlan, handleCloseModal, loading } = useFinanceContext();
 
+  React.useEffect(() => {
+    if (openModal.createPlan) {
+      setName("");
+      setPrice("");
+      setInterval("monthly");
+    }
+  }, [openModal.createPlan])
+
   return (
     <ModalContainer open={openModal.createPlan}>
       <form
@@ -82,6 +90,7 @@ export function ModalCreatePlan() {
         <Separator className="my-4" />
         <div className="flex justify-end gap-2">
           <Button
+            type="button"
             variant={"ghost"}
             onClick={() => handleCloseModal("createPlan")}
           >

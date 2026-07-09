@@ -4,7 +4,8 @@
     "private": true,
     "main": "./src/app.ts",
     "scripts": {
-        "dev": "tsx watch --env-file=../../.env src/app.ts | pino-pretty"
+        "dev": "tsx watch --env-file=../../.env src/app.ts | pino-pretty",
+        "start": "tsx src/app.ts"
     },
     "dependencies": {
         "@fastify/cors": "^11.2.0",

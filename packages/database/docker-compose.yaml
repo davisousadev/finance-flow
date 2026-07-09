@@ -1,7 +1,7 @@
 services:
   database:
     image: postgres:15
-    container_name: finance-flow-database
+    container_name: finance-flow-database-local
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
