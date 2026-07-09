@@ -68,6 +68,49 @@ pnpm web
 
 Depois disso, a API sobe em `http://localhost:3000` e o frontend fica disponível no endereço exibido pelo Vite.
 
+## Como rodar usando Docker
+
+Você também pode rodar toda a aplicação (Banco de dados, API e Frontend) de forma integrada utilizando o Docker.
+
+### Pré-requisitos
+
+- Docker instalado
+- Docker Compose v2+
+
+### Passos
+
+1. Na raiz do projeto, execute o comando para subir todos os containers:
+
+```bash
+docker compose up --build
+```
+
+Esse comando irá:
+- Subir o banco de dados PostgreSQL (e aguardar ele ficar saudável).
+- Compilar a API e aplicar automaticamente as migrations pendentes.
+- Compilar o frontend React com o Vite injetando a URL da API correta e disponibilizar os arquivos através do Nginx.
+
+2. Acesse os serviços nos seguintes endereços:
+- **Frontend (Web)**: [http://localhost](http://localhost)
+- **Backend (API)**: [http://localhost:3000](http://localhost:3000)
+
+### Comandos úteis do Docker
+
+- **Rodar em segundo plano (background):**
+  ```bash
+  docker compose up -d
+  ```
+
+- **Parar os containers:**
+  ```bash
+  docker compose down
+  ```
+
+- **Ver logs dos serviços:**
+  ```bash
+  docker compose logs -f
+  ```
+
 ## Como configurar
 
 O projeto depende principalmente destas variáveis de ambiente:
