@@ -65,6 +65,7 @@ export function ModalCreatePlan() {
             id="price"
             placeholder="Plan Price"
             className="text-primary-100"
+            type="number"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             required

@@ -5,8 +5,8 @@ export const plansService = {
   async getPlans(): Promise<Plan[]> {
     const response = await fetch(`${URL}/plans`);
     if (!response.ok) {
-      console.error("Failed to fetch plans");
-      return [];
+      const data = (await response.json()) as ApiResponse<Plan[]>;
+      throw new Error(data?.message || "Failed to fetch plans");
     }
     const data = (await response.json()) as ApiResponse<Plan[]>;
 
@@ -23,7 +23,8 @@ export const plansService = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to create plan");
+      const data = (await response.json()) as ApiResponse<Plan>;
+      throw new Error(data?.message || "Failed to create plan");
     }
 
     const data = (await response.json()) as ApiResponse<Plan>;
@@ -40,7 +41,8 @@ export const plansService = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to update plan");
+      const data = (await response.json()) as ApiResponse<Plan>;
+      throw new Error(data?.message || "Failed to update plan");
     }
 
     const data = (await response.json()) as ApiResponse<Plan>;
@@ -53,7 +55,8 @@ export const plansService = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to delete plan");
+      const data = (await response.json()) as ApiResponse<{ id: number }>;
+      throw new Error(data?.message || "Failed to delete plan");
     }
 
     const data = (await response.json()) as ApiResponse<{ id: number }>;

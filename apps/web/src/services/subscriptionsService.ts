@@ -14,7 +14,8 @@ export const subscriptionService = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to create subscription");
+      const data = (await response.json()) as ApiResponse<Subscription>;
+      throw new Error(data?.message || "Failed to create subscription");
     }
 
     const data = (await response.json()) as ApiResponse<Subscription>;
@@ -24,7 +25,8 @@ export const subscriptionService = {
   async getSubscriptionDetails(): Promise<SubscriptionDetails[]> {
     const response = await fetch(`${URL}/subscriptions/details`);
     if (!response.ok) {
-      return [];
+      const data = (await response.json()) as ApiResponse<SubscriptionDetails[]>;
+      throw new Error(data?.message || "Failed to fetch subscription details");
     }
     const data = (await response.json()) as ApiResponse<SubscriptionDetails[]>;
 

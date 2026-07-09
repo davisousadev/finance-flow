@@ -5,8 +5,8 @@ export const clientsService = {
   async getClients(): Promise<Client[]> {
     const response = await fetch(`${URL}/clients`);
     if (!response.ok) {
-      console.error("Failed to fetch clients");
-      return [];
+      const data = (await response.json()) as ApiResponse<Client[]>;
+      throw new Error(data?.message || "Failed to fetch clients");
     }
 
     const data = (await response.json()) as ApiResponse<Client[]>;
@@ -24,7 +24,8 @@ export const clientsService = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to create client");
+      const data = (await response.json()) as ApiResponse<Client>;
+      throw new Error(data?.message || "Failed to create client");
     }
 
     const data = (await response.json()) as ApiResponse<Client>;
@@ -41,7 +42,8 @@ export const clientsService = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to update client");
+      const data = (await response.json()) as ApiResponse<Client>;
+      throw new Error(data?.message || "Failed to update client");
     }
 
     const data = (await response.json()) as ApiResponse<Client>;
@@ -55,7 +57,8 @@ export const clientsService = {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to delete client");
+      const data = (await response.json()) as ApiResponse<{ id: number }>;
+      throw new Error(data?.message || "Failed to delete client");
     }
 
     const data = (await response.json()) as ApiResponse<{ id: number }>;

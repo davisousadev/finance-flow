@@ -93,30 +93,30 @@ const FinanceContext = React.createContext<FinanceContextType>({
   plan: null,
   editPlanModal: false,
   deletePlanModal: false,
-  setClients: () => {},
-  setPlans: () => {},
-  setSubscriptions: () => {},
-  setOpenModal: () => {},
-  handleGetClients: async () => {},
-  handleGetSubscriptions: async () => {},
-  handleOpenModal: () => {},
-  handleCloseModal: () => {},
-  handleGetPlans: async () => {},
-  handleUpdateClients: async () => {},
-  handleOpenEditClientModal: () => {},
-  handleCloseEditClientModal: () => {},
-  handleCreateClient: async () => {},
-  handleCreatePlan: async () => {},
-  handleCreateSubscription: async () => {},
-  handleCloseDeleteClientModal: () => {},
-  handleOpenDeleteClientModal: () => {},
-  handleDeleteClient: async () => {},
-  handleOpenEditPlanModal: () => {},
-  handleCloseEditPlanModal: () => {},
-  handleOpenDeletePlanModal: () => {},
-  handleCloseDeletePlanModal: () => {},
-  handleUpdatePlans: async () => {},
-  handleDeletePlan: async () => {},
+  setClients: () => { },
+  setPlans: () => { },
+  setSubscriptions: () => { },
+  setOpenModal: () => { },
+  handleGetClients: async () => { },
+  handleGetSubscriptions: async () => { },
+  handleOpenModal: () => { },
+  handleCloseModal: () => { },
+  handleGetPlans: async () => { },
+  handleUpdateClients: async () => { },
+  handleOpenEditClientModal: () => { },
+  handleCloseEditClientModal: () => { },
+  handleCreateClient: async () => { },
+  handleCreatePlan: async () => { },
+  handleCreateSubscription: async () => { },
+  handleCloseDeleteClientModal: () => { },
+  handleOpenDeleteClientModal: () => { },
+  handleDeleteClient: async () => { },
+  handleOpenEditPlanModal: () => { },
+  handleCloseEditPlanModal: () => { },
+  handleOpenDeletePlanModal: () => { },
+  handleCloseDeletePlanModal: () => { },
+  handleUpdatePlans: async () => { },
+  handleDeletePlan: async () => { },
 });
 
 export function useFinanceContext() {
@@ -193,6 +193,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       });
     } catch (error) {
       console.error("Error deleting client:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error deleting client");
+      }
     } finally {
       setLoading(false);
       handleCloseDeleteClientModal();
@@ -206,6 +211,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setClients(data);
     } catch (error) {
       console.error("Error fetching clients:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error fetching clients");
+      }
     } finally {
       setLoading(false);
     }
@@ -227,6 +237,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       });
     } catch (error) {
       console.error("Error updating clients:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error updating clients");
+      }
     } finally {
       setLoading(false);
       handleCloseEditClientModal();
@@ -290,6 +305,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       });
     } catch (error) {
       console.error("Error updating plan:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error updating plan");
+      }
     } finally {
       handleCloseEditPlanModal();
       setLoading(false);
@@ -306,6 +326,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       });
     } catch (error) {
       console.error("Error deleting plan:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error deleting plan");
+      }
     } finally {
       handleCloseDeletePlanModal();
       setLoading(false);
@@ -320,7 +345,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     event.preventDefault();
     try {
-      if (!name || !email) {
+      if (!name.trim() || !email.trim()) {
         throw new Error("Name and email are required");
       }
       const createdClient = await clientsService.createClient({ name, email });
@@ -328,6 +353,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       toast.success("Client created successfully!");
     } catch (error) {
       console.error("Error creating client:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error creating client");
+      }
     } finally {
       setOpenModal((prevState) => ({ ...prevState, createClient: false }));
       setLoading(false);
@@ -343,18 +373,26 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     event.preventDefault();
     try {
-      if (!name || !price) {
+      if (!name.trim() || !price.trim()) {
         throw new Error("Name and price are required");
+      }
+      if (parseFloat(price) <= 0) {
+        throw new Error("Price must be a positive number");
       }
       const newPlan = await plansService.createPlan({
         name,
         price: parseFloat(price),
         interval,
       });
-      toast.success("Plan created successfully!");
       setPlans?.((prevPlans) => [...prevPlans, newPlan]);
+      toast.success("Plan created successfully!");
     } catch (error) {
       console.error("Error creating plan:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error creating plan");
+      }
     } finally {
       setOpenModal((prevState) => ({ ...prevState, createPlan: false }));
       setLoading(false);
@@ -384,6 +422,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setSubscriptions?.(updatedSubscriptions);
     } catch (error) {
       console.error("Error creating subscription:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error creating subscription");
+      }
     } finally {
       setOpenModal((prevState) => ({
         ...prevState,
@@ -400,6 +443,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setSubscriptions(data);
     } catch (error) {
       console.error("Error fetching subscriptions:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error fetching subscriptions");
+      }
     } finally {
       setLoading(false);
     }
