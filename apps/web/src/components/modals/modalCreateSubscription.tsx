@@ -23,6 +23,14 @@ export function ModalCreateSubscription() {
   const { openModal, handleCreateSubscription, handleCloseModal, loading } =
     useFinanceContext();
 
+  React.useEffect(() => {
+    if (openModal.createSubscription) {
+      setClientId(0);
+      setPlanId(0);
+      setStatus("active");
+    }
+  }, [openModal.createSubscription])
+
   return (
     <ModalContainer open={openModal.createSubscription}>
       <form
