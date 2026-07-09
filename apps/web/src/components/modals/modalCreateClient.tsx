@@ -54,6 +54,7 @@ export function ModalCreateClient() {
           </label>
           <Input
             id="email"
+            type="email"
             placeholder="Client Email"
             className="text-primary-100"
             value={email}

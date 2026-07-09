@@ -35,7 +35,7 @@ export const subscriptionsController = {
         clientId: subscriptions.clientId,
         planId: subscriptions.planId,
         status: subscriptions.status,
-        clientName:clients.name,
+        clientName: clients.name,
         clientEmail: clients.email,
         planName: plans.name,
         planPrice: plans.price,
