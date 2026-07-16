@@ -8,10 +8,9 @@ import {
 } from "../ui/table";
 import { Badge } from "../ui/badge";
 import { useFinanceContext } from "@/context/financeContext";
-import { Loading } from "../loading";
 
 export function TableSubscriptions() {
-  const {subscriptions, loading} = useFinanceContext()
+  const { subscriptions } = useFinanceContext()
 
   function getBadgeVariant(status: string) {
     switch (status) {
@@ -25,8 +24,7 @@ export function TableSubscriptions() {
         return "default";
     }
   }
-  
-  if (loading) return <Loading />;
+
 
   if (!subscriptions || subscriptions.length === 0) return <div>No subscriptions available</div>;
 

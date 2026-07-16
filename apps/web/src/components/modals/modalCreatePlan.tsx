@@ -12,6 +12,7 @@ import {
 import { useFinanceContext } from "@/context/financeContext";
 import { LoaderIcon } from "lucide-react";
 import { Separator } from "../ui/separator";
+import { useCreatePlanMutation } from "@/hooks/usePlansQuery";
 
 export function ModalCreatePlan() {
   const [name, setName] = React.useState("");
@@ -20,23 +21,27 @@ export function ModalCreatePlan() {
     "monthly",
   );
 
-  const { openModal, handleCreatePlan, handleCloseModal, loading } = useFinanceContext();
+  const { mutate, isPending } = useCreatePlanMutation()
 
-  React.useEffect(() => {
-    if (openModal.createPlan) {
-      setName("");
-      setPrice("");
-      setInterval("monthly");
-    }
-  }, [openModal.createPlan])
+  const { openModal, handleCloseModal } = useFinanceContext();
+
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutate({ name, price: parseFloat(price), interval }, {
+      onSuccess: () => {
+        handleCloseModal("createPlan")
+        setName("");
+        setPrice("");
+        setInterval("monthly");
+      }
+    })
+  }
 
   return (
     <ModalContainer open={openModal.createPlan}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
-        onSubmit={(e) => {
-          handleCreatePlan(e, name, price, interval);
-        }}
+        onSubmit={handleSubmit}
       >
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-semibold text-secondary-200">
@@ -97,8 +102,8 @@ export function ModalCreatePlan() {
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={loading}>
-            {loading ? <LoaderIcon className="animate-spin" /> : "Create Plan"}
+          <Button type="submit" disabled={isPending}>
+            {isPending ? <LoaderIcon className="animate-spin" /> : "Create Plan"}
           </Button>
         </div>
       </form>

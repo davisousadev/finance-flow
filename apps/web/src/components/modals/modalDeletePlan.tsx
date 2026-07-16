@@ -3,15 +3,24 @@ import { Separator } from "../ui/separator";
 import { ModalContainer } from "./modalContainer";
 import { Button } from "../ui/button";
 import { LoaderIcon } from "lucide-react";
+import { useDeletePlanMutation } from "@/hooks/usePlansQuery";
 
 export function ModalDeletePlan() {
+  const { mutate, isPending } = useDeletePlanMutation()
   const {
     handleCloseDeletePlanModal,
     deletePlanModal,
     plan,
-    handleDeletePlan,
-    loading,
   } = useFinanceContext();
+
+  const handleDeletePlan = () => {
+    mutate(plan?.id || 0, {
+      onSuccess: () => {
+        handleCloseDeletePlanModal()
+      }
+    })
+  }
+
   return (
     <ModalContainer open={deletePlanModal}>
       <div>
@@ -31,10 +40,10 @@ export function ModalDeletePlan() {
           </Button>
           <Button
             variant="destructive"
-            onClick={() => handleDeletePlan(plan?.id || 0)}
-            disabled={!plan || loading}
+            onClick={handleDeletePlan}
+            disabled={!plan || isPending}
           >
-            {loading ? <LoaderIcon className="animate-spin" /> : "Delete"}
+            {isPending ? <LoaderIcon className="animate-spin" /> : "Delete"}
           </Button>
         </div>
       </div>

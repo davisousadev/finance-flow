@@ -16,12 +16,16 @@ import {
 } from "../ui/table";
 import { useFinanceContext } from "@/context/financeContext";
 import { Loading } from "../loading";
+import { usePlansQuery } from "@/hooks/usePlansQuery";
 
 export function TablePlans() {
-  const { plans, loading, handleOpenEditPlanModal, handleOpenDeletePlanModal } =
-    useFinanceContext();
+  const { data: plans, isError, isLoading, error } = usePlansQuery()
 
-  if (loading) return <Loading />;
+  const { handleOpenEditPlanModal, handleOpenDeletePlanModal } = useFinanceContext();
+
+  if (isLoading) return <Loading />;
+
+  if (isError) return <div>Error: {error.message}</div>;
 
   if (!plans || plans.length === 0) return <div>No plans available</div>;
 

@@ -11,10 +11,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useUpdatePlanMutation } from "@/hooks/usePlansQuery";
+import { LoaderIcon } from "lucide-react";
 
 export function ModalEditPlan() {
-  const { handleCloseEditPlanModal, editPlanModal, handleUpdatePlans, plan } =
-    useFinanceContext();
+  const { mutate, isPending } = useUpdatePlanMutation()
+
+  const { handleCloseEditPlanModal, editPlanModal, plan } = useFinanceContext();
+
+  const handleUpdatePlan = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!plan) return
+    mutate({ id: plan?.id || 0, name, price: Number(price), interval }, {
+      onSuccess: () => {
+        handleCloseEditPlanModal()
+      }
+    })
+  }
 
   const [name, setName] = React.useState(plan?.name || "");
   const [price, setPrice] = React.useState(plan?.price || "");
@@ -23,22 +36,15 @@ export function ModalEditPlan() {
   );
 
   React.useEffect(() => {
-    setName(plan?.name || "");
-    setPrice(plan?.price || "");
-    setInterval(plan?.interval || "monthly");
+    setName(plan?.name || "")
+    setPrice(plan?.price?.toString() || "")
+    setInterval(plan?.interval || "monthly")
   }, [plan]);
 
   return (
     <ModalContainer open={editPlanModal}>
       <form
-        onSubmit={(e) => {
-          handleUpdatePlans(e, {
-            id: plan?.id || 0,
-            name,
-            price: Number(price),
-            interval,
-          });
-        }}
+        onSubmit={handleUpdatePlan}
       >
         <h3 className="text-lg font-semibold">Edit Plan</h3>
         <p className="text-sm text-secondary-200">
@@ -88,7 +94,9 @@ export function ModalEditPlan() {
           >
             Cancel
           </Button>
-          <Button type="submit">Save Changes</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? <LoaderIcon className="animate-spin" /> : "Save Changes"}
+          </Button>
         </div>
       </form>
     </ModalContainer>

@@ -9,7 +9,7 @@ import { ChartCandlestick, CheckIcon, Plus, UserRoundCheck } from "lucide-react"
 import React from "react";
 
 export function Home() {
- const { subscriptions, handleGetClients, handleGetPlans, handleGetSubscriptions, handleOpenModal } = useFinanceContext();
+  const { subscriptions, handleGetSubscriptions, handleOpenModal } = useFinanceContext();
 
   const monthlyPrice = subscriptions.reduce(
     (total, subscription) => total + subscription.planPrice,
@@ -25,8 +25,6 @@ export function Home() {
   ).length;
 
   React.useEffect(() => {
-    handleGetClients();
-    handleGetPlans();
     handleGetSubscriptions();
   }, []);
 
@@ -95,12 +93,12 @@ export function Home() {
               Add Subscription
             </Button>
           </div>
-          <TableSubscriptions/>
+          <TableSubscriptions />
         </div>
       </section>
-      <ModalCreateClient/>
-      <ModalCreatePlan/>
-      <ModalCreateSubscription/>
+      <ModalCreateClient />
+      <ModalCreatePlan />
+      <ModalCreateSubscription />
     </>
   );
 }
