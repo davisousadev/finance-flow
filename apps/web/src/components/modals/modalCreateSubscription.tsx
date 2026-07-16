@@ -12,6 +12,7 @@ import {
 import { useFinanceContext } from "@/context/financeContext";
 import { LoaderIcon } from "lucide-react";
 import { Separator } from "../ui/separator";
+import { useCreateSubscriptionMutation } from "@/hooks/useSubscriptionsQuery";
 
 export function ModalCreateSubscription() {
   const [clientId, setClientId] = React.useState<number>(0);
@@ -20,24 +21,27 @@ export function ModalCreateSubscription() {
     "active",
   );
 
-  const { openModal, handleCreateSubscription, handleCloseModal, loading } =
-    useFinanceContext();
+  const { mutate, isPending } = useCreateSubscriptionMutation()
 
-  React.useEffect(() => {
-    if (openModal.createSubscription) {
-      setClientId(0);
-      setPlanId(0);
-      setStatus("active");
-    }
-  }, [openModal.createSubscription])
+  const { openModal, handleCloseModal } = useFinanceContext();
+
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    mutate({ clientId, planId, status }, {
+      onSuccess: () => {
+        handleCloseModal("createSubscription")
+        setClientId(0)
+        setPlanId(0)
+        setStatus("active")
+      }
+    })
+  }
 
   return (
     <ModalContainer open={openModal.createSubscription}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
-        onSubmit={(e) => {
-          handleCreateSubscription(e, clientId, planId, status);
-        }}
+        onSubmit={handleSubmit}
       >
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-semibold text-secondary-200">
@@ -98,8 +102,8 @@ export function ModalCreateSubscription() {
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={loading}>
-            {loading ? <LoaderIcon className="animate-spin" /> : "Create Subscription"}
+          <Button type="submit" disabled={isPending}>
+            {isPending ? <LoaderIcon className="animate-spin" /> : "Create Subscription"}
           </Button>
         </div>
       </form>

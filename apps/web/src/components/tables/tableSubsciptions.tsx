@@ -7,10 +7,11 @@ import {
   TableRow,
 } from "../ui/table";
 import { Badge } from "../ui/badge";
-import { useFinanceContext } from "@/context/financeContext";
+import { useSubscriptionsQuery } from "@/hooks/useSubscriptionsQuery";
+import { Loading } from "../loading";
 
 export function TableSubscriptions() {
-  const { subscriptions } = useFinanceContext()
+  const { data: subscriptions, isLoading, isError, error } = useSubscriptionsQuery()
 
   function getBadgeVariant(status: string) {
     switch (status) {
@@ -25,6 +26,9 @@ export function TableSubscriptions() {
     }
   }
 
+  if (isLoading) return <Loading />
+
+  if (isError) return <div>Error: {error.message}</div>
 
   if (!subscriptions || subscriptions.length === 0) return <div>No subscriptions available</div>;
 

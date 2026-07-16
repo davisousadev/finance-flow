@@ -5,28 +5,34 @@ import { ModalCreateSubscription } from "@/components/modals/modalCreateSubscrip
 import { TableSubscriptions } from "@/components/tables/tableSubsciptions";
 import { Button } from "@/components/ui/button";
 import { useFinanceContext } from "@/context/financeContext";
+import { useSubscriptionsQuery } from "@/hooks/useSubscriptionsQuery";
 import { ChartCandlestick, CheckIcon, Plus, UserRoundCheck } from "lucide-react";
-import React from "react";
+import { useMemo } from "react";
 
 export function Home() {
-  const { subscriptions, handleGetSubscriptions, handleOpenModal } = useFinanceContext();
+  const { data: subscriptions = [] } = useSubscriptionsQuery();
+  const { handleOpenModal } = useFinanceContext();
 
-  const monthlyPrice = subscriptions.reduce(
-    (total, subscription) => total + subscription.planPrice,
-    0,
-  );
-  const activePlans = subscriptions.filter(
-    (subscription) => subscription.status === "active",
-  ).length;
+  const monthlyPrice = useMemo(() => {
+    return subscriptions.reduce(
+      (total, subscription) => total + subscription.planPrice,
+      0,
+    );
+  }, [subscriptions]);
 
-  const activeClients = subscriptions.filter(
-    (subscription) =>
-      subscription.status === "active" || subscription.status === "expired",
-  ).length;
+  const activePlans = useMemo(() => {
+    return subscriptions.filter(
+      (subscription) => subscription.status === "active",
+    ).length;
+  }, [subscriptions]);
 
-  React.useEffect(() => {
-    handleGetSubscriptions();
-  }, []);
+  const activeClients = useMemo(() => {
+    return subscriptions.filter(
+      (subscription) =>
+        subscription.status === "active" || subscription.status === "expired",
+    ).length;
+  }, [subscriptions]);
+
 
   return (
     <>

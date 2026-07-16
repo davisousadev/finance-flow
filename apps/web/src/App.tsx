@@ -34,7 +34,7 @@ function App() {
         <AppSidebar />
         <SidebarInset>
           <Header />
-          <Toaster position="top-right" richColors />
+          <Toaster position="top-right" closeButton richColors />
           <QueryClientProvider client={queryClient}>
             <RouterProvider router={router} />
           </QueryClientProvider>

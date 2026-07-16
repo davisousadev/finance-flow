@@ -1,14 +1,10 @@
-import { subscriptionService } from "@/services/subscriptionsService";
 import type { Client } from "@/types/clientTypes";
 import type { Plan } from "@/types/plansTypes";
-import type { SubscriptionDetails } from "@/types/subscriptions";
 import React from "react";
-import { toast } from "sonner";
 
 type ModalName = "createClient" | "createPlan" | "createSubscription";
 
 type FinanceContextType = {
-  subscriptions: SubscriptionDetails[];
   openModal: {
     createClient: boolean;
     createPlan: boolean;
@@ -20,7 +16,6 @@ type FinanceContextType = {
   plan: Plan | null;
   editPlanModal: boolean;
   deletePlanModal: boolean;
-  setSubscriptions: React.Dispatch<React.SetStateAction<SubscriptionDetails[]>>;
   setOpenModal: React.Dispatch<
     React.SetStateAction<{
       createClient: boolean;
@@ -28,17 +23,10 @@ type FinanceContextType = {
       createSubscription: boolean;
     }>
   >;
-  handleGetSubscriptions: () => Promise<void>;
   handleCloseModal: (modalName: ModalName) => void;
   handleOpenModal: (modalName: ModalName) => void;
   handleOpenEditClientModal: (client: Client) => void;
   handleCloseEditClientModal: () => void;
-  handleCreateSubscription: (
-    event: React.SubmitEvent<HTMLFormElement>,
-    clientId: number,
-    planId: number,
-    status: "active" | "canceled" | "expired",
-  ) => Promise<void>;
   handleCloseDeleteClientModal: () => void;
   handleOpenDeleteClientModal: (client: Client) => void;
   handleOpenEditPlanModal: (plan: Plan) => void;
@@ -48,7 +36,6 @@ type FinanceContextType = {
 };
 
 const FinanceContext = React.createContext<FinanceContextType>({
-  subscriptions: [],
   openModal: {
     createClient: false,
     createPlan: false,
@@ -60,14 +47,11 @@ const FinanceContext = React.createContext<FinanceContextType>({
   plan: null,
   editPlanModal: false,
   deletePlanModal: false,
-  setSubscriptions: () => { },
   setOpenModal: () => { },
-  handleGetSubscriptions: async () => { },
   handleOpenModal: () => { },
   handleCloseModal: () => { },
   handleOpenEditClientModal: () => { },
   handleCloseEditClientModal: () => { },
-  handleCreateSubscription: async () => { },
   handleCloseDeleteClientModal: () => { },
   handleOpenDeleteClientModal: () => { },
   handleOpenEditPlanModal: () => { },
@@ -100,9 +84,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   });
   const [editPlanModal, setEditPlanModal] = React.useState(false);
   const [deletePlanModal, setDeletePlanModal] = React.useState(false);
-  const [subscriptions, setSubscriptions] = React.useState<
-    SubscriptionDetails[]
-  >([]);
   const [openModal, setOpenModal] = React.useState({
     createClient: false,
     createPlan: false,
@@ -167,55 +148,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
-  async function handleCreateSubscription(
-    event: React.SubmitEvent<HTMLFormElement>,
-    clientId: number,
-    planId: number,
-    status: "active" | "canceled" | "expired",
-  ) {
-    event.preventDefault();
-    try {
-      if (!clientId || !planId) {
-        throw new Error("Client and plan are required");
-      }
-      await subscriptionService.createSubscription({
-        clientId,
-        planId,
-        status,
-      });
-      toast.success("Subscription created successfully!");
-      const updatedSubscriptions =
-        await subscriptionService.getSubscriptionDetails();
-      setSubscriptions?.(updatedSubscriptions);
-    } catch (error) {
-      console.error("Error creating subscription:", error);
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Error creating subscription");
-      }
-    } finally {
-      setOpenModal((prevState) => ({
-        ...prevState,
-        createSubscription: false,
-      }));
-    }
-  }
-
-  async function handleGetSubscriptions() {
-    try {
-      const data = await subscriptionService.getSubscriptionDetails();
-      setSubscriptions(data);
-    } catch (error) {
-      console.error("Error fetching subscriptions:", error);
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Error fetching subscriptions");
-      }
-    }
-  }
-
   function handleOpenModal(modalName: ModalName) {
     setOpenModal((prevState) => ({
       ...prevState,
@@ -234,21 +166,17 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     <FinanceContext.Provider
       value={{
         editClientModal,
-        subscriptions,
         openModal,
         client,
         plan,
         editPlanModal,
         deletePlanModal,
         deleteClientModal,
-        setSubscriptions,
         setOpenModal,
-        handleGetSubscriptions,
         handleOpenModal,
         handleCloseModal,
         handleOpenEditClientModal,
         handleCloseEditClientModal,
-        handleCreateSubscription,
         handleCloseDeleteClientModal,
         handleOpenDeleteClientModal,
         handleOpenEditPlanModal,
