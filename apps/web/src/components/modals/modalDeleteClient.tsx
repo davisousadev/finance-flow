@@ -3,15 +3,26 @@ import { Separator } from "../ui/separator";
 import { ModalContainer } from "./modalContainer";
 import { Button } from "../ui/button";
 import { LoaderIcon } from "lucide-react";
+import { useDeleteClientMutation } from "@/hooks/useClientsQuery";
 
 export function ModalDeleteClient() {
   const {
     handleCloseDeleteClientModal,
     deleteClientModal,
     client,
-    handleDeleteClient,
-    loading,
   } = useFinanceContext();
+
+  const { mutate, isPending } = useDeleteClientMutation();
+
+  const handleDelete = () => {
+    if (!client) return;
+    mutate(client.id, {
+      onSuccess: () => {
+        handleCloseDeleteClientModal();
+      },
+    });
+  };
+
   return (
     <ModalContainer open={deleteClientModal}>
       <div>
@@ -31,10 +42,10 @@ export function ModalDeleteClient() {
           </Button>
           <Button
             variant="destructive"
-            onClick={() => handleDeleteClient(client?.id || 0)}
-            disabled={!client || loading}
+            onClick={handleDelete}
+            disabled={!client || isPending}
           >
-            {loading ? <LoaderIcon className="animate-spin" /> : "Delete"}
+            {isPending ? <LoaderIcon className="animate-spin" /> : "Delete"}
           </Button>
         </div>
       </div>

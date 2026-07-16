@@ -16,13 +16,18 @@ import {
 import { Button } from "../ui/button";
 import { MoreHorizontalIcon } from "lucide-react";
 import { Loading } from "../loading";
+import { useClientsQuery } from "@/hooks/useClientsQuery";
 
 export function TableClients() {
-  const { clients, handleOpenEditClientModal, loading, handleOpenDeleteClientModal } = useFinanceContext();
+  const { data: Clients, isLoading, error } = useClientsQuery();
 
-  if (loading)  return <Loading />;
+  const { handleOpenEditClientModal, handleOpenDeleteClientModal } = useFinanceContext();
 
-  if (!clients || clients.length === 0) return <div>No clients available</div>;
+  if (isLoading) return <Loading />;
+
+  if (error) return <div>Error fetching clients: {error.message}</div>;
+
+  if (!Clients || Clients.length === 0) return <div>No clients available</div>;
 
   return (
     <Table className=" hover:cursor-pointer">
@@ -43,7 +48,7 @@ export function TableClients() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {clients.map((client) => (
+        {Clients.map((client) => (
           <TableRow
             key={client.id}
             className="bg-neutral-950 text-secondary-200 border-none hover:bg-neutral-900/70 hover:cursor-pointer"

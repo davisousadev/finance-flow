@@ -1,4 +1,3 @@
-import { clientsService } from "@/services/clientsService";
 import { plansService } from "@/services/plansService";
 import { subscriptionService } from "@/services/subscriptionsService";
 import type { Client } from "@/types/clientTypes";
@@ -11,7 +10,6 @@ type ModalName = "createClient" | "createPlan" | "createSubscription";
 
 type FinanceContextType = {
   subscriptions: SubscriptionDetails[];
-  clients: Client[];
   plans: Plan[];
   openModal: {
     createClient: boolean;
@@ -25,7 +23,6 @@ type FinanceContextType = {
   plan: Plan | null;
   editPlanModal: boolean;
   deletePlanModal: boolean;
-  setClients: React.Dispatch<React.SetStateAction<Client[]>>;
   setPlans: React.Dispatch<React.SetStateAction<Plan[]>>;
   setSubscriptions: React.Dispatch<React.SetStateAction<SubscriptionDetails[]>>;
   setOpenModal: React.Dispatch<
@@ -35,22 +32,12 @@ type FinanceContextType = {
       createSubscription: boolean;
     }>
   >;
-  handleGetClients: () => Promise<void>;
   handleGetSubscriptions: () => Promise<void>;
   handleGetPlans: () => Promise<void>;
-  handleUpdateClients: (
-    e: React.SubmitEvent<HTMLFormElement>,
-    client: Client,
-  ) => Promise<void>;
   handleCloseModal: (modalName: ModalName) => void;
   handleOpenModal: (modalName: ModalName) => void;
   handleOpenEditClientModal: (client: Client) => void;
   handleCloseEditClientModal: () => void;
-  handleCreateClient: (
-    event: React.SubmitEvent<HTMLFormElement>,
-    name: string,
-    email: string,
-  ) => Promise<void>;
   handleCreatePlan: (
     event: React.SubmitEvent<HTMLFormElement>,
     name: string,
@@ -65,7 +52,6 @@ type FinanceContextType = {
   ) => Promise<void>;
   handleCloseDeleteClientModal: () => void;
   handleOpenDeleteClientModal: (client: Client) => void;
-  handleDeleteClient: (clientId: number) => Promise<void>;
   handleOpenEditPlanModal: (plan: Plan) => void;
   handleCloseEditPlanModal: () => void;
   handleOpenDeletePlanModal: (plan: Plan) => void;
@@ -79,7 +65,6 @@ type FinanceContextType = {
 
 const FinanceContext = React.createContext<FinanceContextType>({
   subscriptions: [],
-  clients: [],
   plans: [],
   openModal: {
     createClient: false,
@@ -93,24 +78,19 @@ const FinanceContext = React.createContext<FinanceContextType>({
   plan: null,
   editPlanModal: false,
   deletePlanModal: false,
-  setClients: () => { },
   setPlans: () => { },
   setSubscriptions: () => { },
   setOpenModal: () => { },
-  handleGetClients: async () => { },
   handleGetSubscriptions: async () => { },
   handleOpenModal: () => { },
   handleCloseModal: () => { },
   handleGetPlans: async () => { },
-  handleUpdateClients: async () => { },
   handleOpenEditClientModal: () => { },
   handleCloseEditClientModal: () => { },
-  handleCreateClient: async () => { },
   handleCreatePlan: async () => { },
   handleCreateSubscription: async () => { },
   handleCloseDeleteClientModal: () => { },
   handleOpenDeleteClientModal: () => { },
-  handleDeleteClient: async () => { },
   handleOpenEditPlanModal: () => { },
   handleCloseEditPlanModal: () => { },
   handleOpenDeletePlanModal: () => { },
@@ -128,7 +108,6 @@ export function useFinanceContext() {
 }
 
 export function FinanceProvider({ children }: { children: React.ReactNode }) {
-  const [clients, setClients] = React.useState<Client[]>([]);
   const [client, setClient] = React.useState<Client>({
     id: 0,
     name: "",
@@ -181,71 +160,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   function handleOpenDeleteClientModal(client: Client) {
     setDeleteClientModal(true);
     setClient(client);
-  }
-
-  async function handleDeleteClient(clientId: number) {
-    setLoading(true);
-    try {
-      await clientsService.deleteClient(clientId);
-      setClients((prevClients) => prevClients.filter((c) => c.id !== clientId));
-      toast.success("Client deleted successfully!", {
-        description: "The client has been deleted.",
-      });
-    } catch (error) {
-      console.error("Error deleting client:", error);
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Error deleting client");
-      }
-    } finally {
-      setLoading(false);
-      handleCloseDeleteClientModal();
-    }
-  }
-
-  async function handleGetClients() {
-    setLoading(true);
-    try {
-      const data = await clientsService.getClients();
-      setClients(data);
-    } catch (error) {
-      console.error("Error fetching clients:", error);
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Error fetching clients");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleUpdateClients(
-    e: React.SubmitEvent<HTMLFormElement>,
-    client: Client,
-  ) {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const updatedClient = await clientsService.updateClient(client);
-      setClients((prevClients) =>
-        prevClients.map((c) => (c.id === client.id ? updatedClient : c)),
-      );
-      toast.success("Client updated successfully!", {
-        description: "The client information has been updated.",
-      });
-    } catch (error) {
-      console.error("Error updating clients:", error);
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Error updating clients");
-      }
-    } finally {
-      setLoading(false);
-      handleCloseEditClientModal();
-    }
   }
 
   async function handleGetPlans() {
@@ -333,33 +247,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       }
     } finally {
       handleCloseDeletePlanModal();
-      setLoading(false);
-    }
-  }
-
-  async function handleCreateClient(
-    event: React.SubmitEvent<HTMLFormElement>,
-    name: string,
-    email: string,
-  ) {
-    setLoading(true);
-    event.preventDefault();
-    try {
-      if (!name.trim() || !email.trim()) {
-        throw new Error("Name and email are required");
-      }
-      const createdClient = await clientsService.createClient({ name, email });
-      setClients?.((prevClients) => [...prevClients, createdClient]);
-      toast.success("Client created successfully!");
-    } catch (error) {
-      console.error("Error creating client:", error);
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Error creating client");
-      }
-    } finally {
-      setOpenModal((prevState) => ({ ...prevState, createClient: false }));
       setLoading(false);
     }
   }
@@ -472,7 +359,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       value={{
         editClientModal,
         subscriptions,
-        clients,
         plans,
         openModal,
         client,
@@ -481,24 +367,19 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         editPlanModal,
         deletePlanModal,
         deleteClientModal,
-        setClients,
         setPlans,
         setSubscriptions,
         setOpenModal,
-        handleGetClients,
         handleGetSubscriptions,
         handleGetPlans,
         handleOpenModal,
         handleCloseModal,
-        handleUpdateClients,
         handleOpenEditClientModal,
         handleCloseEditClientModal,
-        handleCreateClient,
         handleCreatePlan,
         handleCreateSubscription,
         handleCloseDeleteClientModal,
         handleOpenDeleteClientModal,
-        handleDeleteClient,
         handleOpenEditPlanModal,
         handleCloseEditPlanModal,
         handleOpenDeletePlanModal,

@@ -4,30 +4,43 @@ import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { ModalContainer } from "./modalContainer";
 import React from "react";
+import { useUpdateClientMutation } from "@/hooks/useClientsQuery";
+import { LoaderIcon } from "lucide-react";
 
 export function ModalEditClient() {
   const {
     handleCloseEditClientModal,
     editClientModal,
-    handleUpdateClients,
     client,
   } = useFinanceContext();
-  
+
   const [name, setName] = React.useState(client?.name || "");
   const [email, setEmail] = React.useState(client?.email || "");
+
+  const { mutate, isPending } = useUpdateClientMutation();
 
   React.useEffect(() => {
     setName(client?.name || "");
     setEmail(client?.email || "");
   }, [client]);
 
+  const handleUpdate = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!client) return;
+
+    mutate(
+      { id: client.id, name, email },
+      {
+        onSuccess: () => {
+          handleCloseEditClientModal();
+        },
+      }
+    );
+  };
+
   return (
     <ModalContainer open={editClientModal}>
-      <form
-        onSubmit={(e) => {
-          handleUpdateClients(e, { id: client?.id || 0, name, email });
-        }}
-      >
+      <form onSubmit={handleUpdate}>
         <h3 className="text-lg font-semibold">Edit Client</h3>
         <p className="text-sm text-secondary-200">
           Edit client information here.
@@ -41,6 +54,7 @@ export function ModalEditClient() {
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
           />
           <label htmlFor="email" className="font-medium font-mono">
             Email
@@ -50,6 +64,7 @@ export function ModalEditClient() {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
         <Separator className="my-4" />
@@ -61,7 +76,9 @@ export function ModalEditClient() {
           >
             Cancel
           </Button>
-          <Button type="submit">Save Changes</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? <LoaderIcon className="animate-spin" /> : "Save Changes"}
+          </Button>
         </div>
       </form>
     </ModalContainer>

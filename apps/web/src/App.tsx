@@ -8,6 +8,7 @@ import { RouterProvider } from "react-router/dom";
 import { Home } from "./pages/home";
 import { Clients } from "./pages/clients";
 import { Plans } from "./pages/plans";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,8 @@ const router = createBrowserRouter([
   }
 ]);
 
+const queryClient = new QueryClient()
+
 function App() {
   return (
     <FinanceProvider>
@@ -32,7 +35,9 @@ function App() {
         <SidebarInset>
           <Header />
           <Toaster position="top-right" richColors />
-          <RouterProvider router={router} />
+          <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+          </QueryClientProvider>
         </SidebarInset>
       </SidebarProvider>
     </FinanceProvider>

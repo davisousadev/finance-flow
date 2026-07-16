@@ -5,29 +5,32 @@ import { Input } from "../ui/input";
 import { useFinanceContext } from "@/context/financeContext";
 import { LoaderIcon } from "lucide-react";
 import { Separator } from "../ui/separator";
+import { useCreateClientMutation } from "@/hooks/useClientsQuery";
 
 export function ModalCreateClient() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
 
-  const { openModal, handleCreateClient, handleCloseModal, loading } =
-    useFinanceContext();
+  const { mutate, isPending } = useCreateClientMutation()
 
-  React.useEffect(() => {
-    if (openModal.createClient) {
-      setName("");
-      setEmail("");
-    }
-  }, [openModal.createClient])
+  const { openModal, handleCloseModal } = useFinanceContext();
 
+  const handleCreateClient = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutate({ name, email }, {
+      onSuccess: () => {
+        handleCloseModal("createClient")
+        setName("")
+        setEmail("")
+      }
+    })
+  }
 
   return (
     <ModalContainer open={openModal.createClient}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
-        onSubmit={(e) => {
-          handleCreateClient(e, name, email);
-        }}
+        onSubmit={handleCreateClient}
       >
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-semibold text-secondary-200">
@@ -71,8 +74,8 @@ export function ModalCreateClient() {
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={loading}>
-            {loading ? <LoaderIcon className="animate-spin" /> : "Create Client"}
+          <Button type="submit" disabled={isPending}>
+            {isPending ? <LoaderIcon className="animate-spin" /> : "Create Client"}
           </Button>
         </footer>
       </form>

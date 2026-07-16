@@ -8,11 +8,8 @@ import { Plus } from "lucide-react";
 import React from "react";
 
 export function Clients(): React.JSX.Element {
-  const { handleGetClients, handleOpenModal } = useFinanceContext();
+  const { handleOpenModal } = useFinanceContext();
 
-  React.useEffect(() => {
-    handleGetClients();
-  }, []);
   return (
     <>
       <section className="flex flex-col gap-8 p-12 py-12 h-full">
