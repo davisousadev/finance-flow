@@ -3,7 +3,6 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { ModalContainer } from "./modalContainer";
-import React from "react";
 import {
   Select,
   SelectContent,
@@ -13,38 +12,36 @@ import {
 } from "../ui/select";
 import { useUpdatePlanMutation } from "@/hooks/usePlansQuery";
 import { LoaderIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import type { Plan } from "@/types/plansTypes";
 
 export function ModalEditPlan() {
   const { mutate, isPending } = useUpdatePlanMutation()
 
   const { handleCloseEditPlanModal, editPlanModal, plan } = useFinanceContext();
 
-  const handleUpdatePlan = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Omit<Plan, "id">>({
+    values: {
+      name: plan?.name || "",
+      price: plan?.price || 0,
+      interval: plan?.interval || "monthly",
+    }
+  })
+
+  const handleUpdatePlan = (formData: Omit<Plan, "id">) => {
     if (!plan) return
-    mutate({ id: plan?.id || 0, name, price: Number(price), interval }, {
+    mutate({ id: plan?.id || 0, ...formData }, {
       onSuccess: () => {
         handleCloseEditPlanModal()
+        reset()
       }
     })
   }
 
-  const [name, setName] = React.useState(plan?.name || "");
-  const [price, setPrice] = React.useState(plan?.price || "");
-  const [interval, setInterval] = React.useState<"monthly" | "yearly">(
-    plan?.interval || "monthly",
-  );
-
-  React.useEffect(() => {
-    setName(plan?.name || "")
-    setPrice(plan?.price?.toString() || "")
-    setInterval(plan?.interval || "monthly")
-  }, [plan]);
-
   return (
     <ModalContainer open={editPlanModal}>
       <form
-        onSubmit={handleUpdatePlan}
+        onSubmit={handleSubmit(handleUpdatePlan)}
       >
         <h3 className="text-lg font-semibold">Edit Plan</h3>
         <p className="text-sm text-secondary-200">
@@ -55,26 +52,30 @@ export function ModalEditPlan() {
             Price
           </label>
           <Input
-            type="text"
+            type="number"
             id="price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            {...register("price", {
+              required: "Price is required",
+              valueAsNumber: true
+            })}
           />
+          {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
           <label htmlFor="name" className="font-medium font-mono">
             Name
           </label>
           <Input
             type="text"
             id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            {...register("name", {
+              required: "Name is required"
+            })}
           />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           <label htmlFor="interval">Interval</label>
           <Select
-            value={interval}
-            onValueChange={(value) =>
-              setInterval(value as "monthly" | "yearly")
-            }
+            {...register("interval", {
+              required: "Interval is required"
+            })}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select an interval" />
@@ -84,6 +85,7 @@ export function ModalEditPlan() {
               <SelectItem value="yearly">Yearly</SelectItem>
             </SelectContent>
           </Select>
+          {errors.interval && <p className="text-red-500 text-sm">{errors.interval.message}</p>}
         </div>
         <Separator className="my-4" />
         <div className="flex justify-end gap-4">
@@ -91,6 +93,7 @@ export function ModalEditPlan() {
             type="button"
             variant="ghost"
             onClick={handleCloseEditPlanModal}
+            disabled={isPending}
           >
             Cancel
           </Button>

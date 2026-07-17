@@ -1,6 +1,5 @@
 import { ModalContainer } from "./modalContainer";
 import { Button } from "../ui/button";
-import React from "react";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -13,26 +12,27 @@ import { useFinanceContext } from "@/context/financeContext";
 import { LoaderIcon } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useCreatePlanMutation } from "@/hooks/usePlansQuery";
+import { useForm } from "react-hook-form";
+import type { Plan } from "@/types/plansTypes";
 
 export function ModalCreatePlan() {
-  const [name, setName] = React.useState("");
-  const [price, setPrice] = React.useState("");
-  const [interval, setInterval] = React.useState<"monthly" | "yearly">(
-    "monthly",
-  );
-
   const { mutate, isPending } = useCreatePlanMutation()
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    defaultValues: {
+      name: "",
+      price: 0,
+      interval: "monthly"
+    }
+  })
 
   const { openModal, handleCloseModal } = useFinanceContext();
 
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    mutate({ name, price: parseFloat(price), interval }, {
+  const handleCreatePlan = (formData: Omit<Plan, "id">) => {
+    mutate(formData, {
       onSuccess: () => {
         handleCloseModal("createPlan")
-        setName("");
-        setPrice("");
-        setInterval("monthly");
+        reset()
       }
     })
   }
@@ -41,7 +41,7 @@ export function ModalCreatePlan() {
     <ModalContainer open={openModal.createPlan}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(handleCreatePlan)}
       >
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-semibold text-secondary-200">
@@ -59,30 +59,34 @@ export function ModalCreatePlan() {
             id="name"
             placeholder="Plan Name"
             className="text-primary-100"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
+            {...register("name", {
+              required: "Name is required"
+            })}
+            disabled={isPending}
           />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           <label className="text-primary-100 font-mono" htmlFor="price">
             Price
           </label>
           <Input
             id="price"
+            type="number"
             placeholder="Plan Price"
             className="text-primary-100"
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
+            {...register("price", {
+              required: "Price is required",
+              valueAsNumber: true
+            })}
+            disabled={isPending}
           />
+          {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
           <label className="text-primary-100 font-mono" htmlFor="interval">
             Interval
           </label>
           <Select
-            value={interval}
-            onValueChange={(value) =>
-              setInterval(value as "monthly" | "yearly")
-            }
+            {...register("interval", {
+              required: "Interval is required"
+            })}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select an interval" />
@@ -92,6 +96,7 @@ export function ModalCreatePlan() {
               <SelectItem value="yearly">Yearly</SelectItem>
             </SelectContent>
           </Select>
+          {errors.interval && <p className="text-red-500 text-sm">{errors.interval.message}</p>}
         </div>
         <Separator className="my-4" />
         <div className="flex justify-end gap-2">
@@ -99,6 +104,7 @@ export function ModalCreatePlan() {
             type="button"
             variant={"ghost"}
             onClick={() => handleCloseModal("createPlan")}
+            disabled={isPending}
           >
             Cancel
           </Button>

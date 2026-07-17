@@ -1,4 +1,3 @@
-import React from "react";
 import { ModalContainer } from "./modalContainer";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -6,22 +5,26 @@ import { useFinanceContext } from "@/context/financeContext";
 import { LoaderIcon } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useCreateClientMutation } from "@/hooks/useClientsQuery";
+import { useForm } from "react-hook-form";
 
 export function ModalCreateClient() {
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
 
   const { mutate, isPending } = useCreateClientMutation()
 
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    defaultValues: {
+      name: "",
+      email: ""
+    }
+  });
+
   const { openModal, handleCloseModal } = useFinanceContext();
 
-  const handleCreateClient = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    mutate({ name, email }, {
+  const handleCreateClient = (formData: { name: string, email: string }) => {
+    mutate(formData, {
       onSuccess: () => {
         handleCloseModal("createClient")
-        setName("")
-        setEmail("")
+        reset()
       }
     })
   }
@@ -30,7 +33,7 @@ export function ModalCreateClient() {
     <ModalContainer open={openModal.createClient}>
       <form
         className="flex flex-col gap-4 px-6 py-2 rounded-lg"
-        onSubmit={handleCreateClient}
+        onSubmit={handleSubmit(handleCreateClient)}
       >
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-semibold text-secondary-200">
@@ -48,10 +51,12 @@ export function ModalCreateClient() {
             id="name"
             placeholder="Client Name"
             className="text-primary-100"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
+            {...register("name", {
+              required: "Name is required"
+            })}
+            disabled={isPending}
           />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           <label className="text-primary-100 font-mono" htmlFor="email">
             Email
           </label>
@@ -60,15 +65,22 @@ export function ModalCreateClient() {
             type="email"
             placeholder="Client Email"
             className="text-primary-100"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address"
+              }
+            })}
+            disabled={isPending}
           />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
         </div>
         <Separator className="my-4" />
         <footer className="flex justify-end gap-2">
           <Button
             type="button"
+            disabled={isPending}
             variant="ghost"
             onClick={() => handleCloseModal("createClient")}
           >

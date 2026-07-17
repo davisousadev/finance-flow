@@ -3,9 +3,10 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { ModalContainer } from "./modalContainer";
-import React from "react";
 import { useUpdateClientMutation } from "@/hooks/useClientsQuery";
 import { LoaderIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import type { Client } from "@/types/clientTypes";
 
 export function ModalEditClient() {
   const {
@@ -14,25 +15,24 @@ export function ModalEditClient() {
     client,
   } = useFinanceContext();
 
-  const [name, setName] = React.useState(client?.name || "");
-  const [email, setEmail] = React.useState(client?.email || "");
-
   const { mutate, isPending } = useUpdateClientMutation();
 
-  React.useEffect(() => {
-    setName(client?.name || "");
-    setEmail(client?.email || "");
-  }, [client]);
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    values: {
+      name: client?.name || "",
+      email: client?.email || ""
+    }
+  })
 
-  const handleUpdate = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleUpdate = (formData: Omit<Client, "id">) => {
     if (!client) return;
 
     mutate(
-      { id: client.id, name, email },
+      { id: client.id, ...formData },
       {
         onSuccess: () => {
           handleCloseEditClientModal();
+          reset()
         },
       }
     );
@@ -40,7 +40,7 @@ export function ModalEditClient() {
 
   return (
     <ModalContainer open={editClientModal}>
-      <form onSubmit={handleUpdate}>
+      <form onSubmit={handleSubmit(handleUpdate)}>
         <h3 className="text-lg font-semibold">Edit Client</h3>
         <p className="text-sm text-secondary-200">
           Edit client information here.
@@ -52,20 +52,26 @@ export function ModalEditClient() {
           <Input
             type="text"
             id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
+            {...register("name", {
+              required: "Name is required"
+            })}
           />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           <label htmlFor="email" className="font-medium font-mono">
             Email
           </label>
           <Input
             type="email"
             id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address"
+              }
+            })}
           />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
         </div>
         <Separator className="my-4" />
         <div className="flex justify-end gap-4">
@@ -73,6 +79,7 @@ export function ModalEditClient() {
             type="button"
             variant="ghost"
             onClick={handleCloseEditClientModal}
+            disabled={isPending}
           >
             Cancel
           </Button>
