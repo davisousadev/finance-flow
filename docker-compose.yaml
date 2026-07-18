@@ -30,6 +30,8 @@ services:
       PORT: 3000
     ports:
       - "3000:3000"
+    volumes:
+      - ./packages/database/migrations:/app/packages/database/migrations
     depends_on:
       database:
         condition: service_healthy
