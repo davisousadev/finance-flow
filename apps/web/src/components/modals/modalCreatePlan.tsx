@@ -18,7 +18,7 @@ import type { Plan } from "@/types/plansTypes";
 export function ModalCreatePlan() {
   const { mutate, isPending } = useCreatePlanMutation()
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Omit<Plan, "id">>({
     defaultValues: {
       name: "",
       price: 0,

@@ -21,7 +21,7 @@ export function ModalEditPlan() {
   const { handleCloseEditPlanModal, editPlanModal, plan } = useFinanceContext();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Omit<Plan, "id">>({
-    values: {
+    defaultValues: {
       name: plan?.name || "",
       price: plan?.price || 0,
       interval: plan?.interval || "monthly",

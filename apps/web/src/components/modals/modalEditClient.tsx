@@ -17,8 +17,8 @@ export function ModalEditClient() {
 
   const { mutate, isPending } = useUpdateClientMutation();
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
-    values: {
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Omit<Client, "id">>({
+    defaultValues: {
       name: client?.name || "",
       email: client?.email || ""
     }

@@ -6,12 +6,13 @@ import { LoaderIcon } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useCreateClientMutation } from "@/hooks/useClientsQuery";
 import { useForm } from "react-hook-form";
+import type { Client } from "@/types/clientTypes";
 
 export function ModalCreateClient() {
 
   const { mutate, isPending } = useCreateClientMutation()
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Omit<Client, "id">>({
     defaultValues: {
       name: "",
       email: ""

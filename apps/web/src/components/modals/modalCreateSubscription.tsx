@@ -19,7 +19,7 @@ export function ModalCreateSubscription() {
 
   const { mutate, isPending } = useCreateSubscriptionMutation()
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Omit<Subscription, "id" | "createdAt">>({
     defaultValues: {
       clientId: 0,
       planId: 0,
@@ -29,7 +29,7 @@ export function ModalCreateSubscription() {
 
   const { openModal, handleCloseModal } = useFinanceContext();
 
-  const handleCreateSubscription = (formData: Omit<Subscription, "id">) => {
+  const handleCreateSubscription = (formData: Omit<Subscription, "id" | "createdAt">) => {
     const clientId = Number(formData.clientId)
     const planId = Number(formData.planId)
 
