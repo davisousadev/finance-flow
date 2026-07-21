@@ -5,6 +5,7 @@ import { ModalCreateSubscription } from "@/components/modals/modalCreateSubscrip
 import { TableSubscriptions } from "@/components/tables/tableSubsciptions";
 import { Button } from "@/components/ui/button";
 import { useFinanceContext } from "@/context/financeContext";
+import { calculateMonthlyPrice, countActiveClients, countActivePlans } from "@/helpers/dataCardsHelper";
 import { useSubscriptionsQuery } from "@/hooks/useSubscriptionsQuery";
 import { ChartCandlestick, CheckIcon, Plus, UserRoundCheck } from "lucide-react";
 import { useMemo } from "react";
@@ -13,26 +14,9 @@ export function Home() {
   const { data: subscriptions = [] } = useSubscriptionsQuery();
   const { handleOpenModal } = useFinanceContext();
 
-  const monthlyPrice = useMemo(() => {
-    return subscriptions.reduce(
-      (total, subscription) => total + subscription.planPrice,
-      0,
-    );
-  }, [subscriptions]);
-
-  const activePlans = useMemo(() => {
-    return subscriptions.filter(
-      (subscription) => subscription.status === "active",
-    ).length;
-  }, [subscriptions]);
-
-  const activeClients = useMemo(() => {
-    return subscriptions.filter(
-      (subscription) =>
-        subscription.status === "active" || subscription.status === "expired",
-    ).length;
-  }, [subscriptions]);
-
+  const monthlyPrice = useMemo(() => calculateMonthlyPrice(subscriptions), [subscriptions]);
+  const activePlans = useMemo(() => countActivePlans(subscriptions), [subscriptions]);
+  const activeClients = useMemo(() => countActiveClients(subscriptions), [subscriptions])
 
   return (
     <>
